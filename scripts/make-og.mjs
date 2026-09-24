@@ -3,7 +3,7 @@
  * Open Graph card generator.
  *
  * Rebuilds public/assets/og.png - the 1200x630 image every social platform and
- * link-unfurler shows when cdot.world is shared. It is a raster, so unlike the
+ * link-unfurler shows when cdot.app is shared. It is a raster, so unlike the
  * rest of the site it cannot pick up a copy change on its own: when the tagline
  * moves, this has to be re-run or the card keeps showing the old wording.
  *

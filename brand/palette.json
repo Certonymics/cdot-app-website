@@ -29,7 +29,7 @@
     "display": "Darker Grotesque"
   },
   "consumers": [
-    { "name": "cdot-world (this repo)", "path": "src/styles/tokens.css" },
+    { "name": "cdot-app-website (this repo)", "path": "src/styles/tokens.css" },
     { "name": "Cdot site (main)",       "path": "../Cdot site (main)/tailwind.config.js" },
     { "name": "c.email-website",        "path": "../c.email-website/tailwind.config.js" },
     { "name": "cma desktop/ui",         "path": "../cma/desktop/ui/tailwind.config.js" }

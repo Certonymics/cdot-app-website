@@ -1,4 +1,4 @@
-# cdot.world
+# cdot.app
 
 Built with [Astro](https://astro.build). Ships **zero client-side framework
 code**: the only JavaScript on the page is the contact-form handler and the
@@ -31,8 +31,8 @@ verbatim will 404. Whatever the host, it needs:
 | Output directory | `dist` |
 | Node version | **22.12.0 or later** — pinned in `.nvmrc` |
 
-The site is fronted by Cloudflare and served from the apex, `cdot.world`;
-`www.cdot.world` 301-redirects to it. `astro.config.mjs` sets `site` to the apex
+The site is fronted by Cloudflare and served from the apex, `cdot.app`;
+`www.cdot.app` 301-redirects to it. `astro.config.mjs` sets `site` to the apex
 to match, because `site` is what generates the `canonical` and `og:url` tags — if
 they name a hostname that redirects, crawlers are told the canonical URL is one
 the server itself disavows. **Keep `site` in step with whichever hostname actually
@@ -42,7 +42,7 @@ Astro 7 requires Node >= 22.12.0, which is newer than some hosts default to, so
 `.nvmrc` pins it. Cloudflare Pages reads that file; keeping the version in the
 repo rather than a dashboard field means the requirement travels with the code.
 
-Production is the Cloudflare Pages project **`cdot-world`** (Workers & Pages ->
+Production is the Cloudflare Pages project **`cdot-app-website`** (Workers & Pages ->
 filter by Pages, not Workers - Pages projects do not appear under Workers). It
 builds the `main` branch and also gives every other branch its own preview URL,
 which is the cheap way to check a change before merging.
@@ -181,7 +181,7 @@ The site is self-hosted apart from one first-party API call:
 | Reference | What it is | Fetched at runtime? |
 |---|---|---|
 | `map.c-layer.certonym.org` | Live C-Layer node data for the network map (own infrastructure) | Yes — degrades to static copy on failure |
-| `cdot.world` | Own canonical / `og:url` | No |
+| `cdot.app` | Own canonical / `og:url` | No |
 | `www.w3.org`, `schema.org` | XML namespace + JSON-LD `@context` identifiers | No — never requested |
 
 | `script.google.com` | Contact-form endpoint (own Apps Script deployment) | Yes — on submit only |

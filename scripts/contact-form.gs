@@ -130,7 +130,7 @@ function notify(email, message) {
     replyTo: email,
     body: [
       'From:  ' + email,
-      'Site:  cdot.world',
+      'Site:  cdot.app',
       '',
       message,
       '',

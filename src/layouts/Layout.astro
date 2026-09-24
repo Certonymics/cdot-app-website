@@ -27,8 +27,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href;
    `throughput` PropertyValue) instead of prose buried in one description
    string. Keep the figures here in step with the spec chips in index.astro and
    with public/llms.txt. */
-const ORG_ID = "https://cdot.world/#certonymity";
-const CDOT_ID = "https://cdot.world/#cdot";
+/* Derived from `site` in astro.config.mjs, never written out. These ids are
+   the stable identity of the org and the product across the whole graph, and
+   nine hardcoded copies of the domain is exactly how they drift apart. */
+const SITE = Astro.site.href;
+const abs = (path) => new URL(path, Astro.site).href;
+const ORG_ID = `${SITE}#certonymity`;
+const CDOT_ID = `${SITE}#cdot`;
 
 /* PropertyValue is schema.org's escape hatch for domain-specific measurements
    that have no dedicated property. Numeric `value` + `unitText` keeps the
@@ -40,7 +45,7 @@ const spec = (name, value, unitText) =>
 
 const layer = (id, name, alternateName, category, description, specs) => ({
   "@type": "SoftwareApplication",
-  "@id": `https://cdot.world/#${id}`,
+  "@id": `${SITE}#${id}`,
   name,
   alternateName,
   applicationCategory: category,
@@ -58,8 +63,8 @@ const graph = [
     name: "Certonymity Ltd",
     legalName: "Certonymity Ltd",
     alternateName: "Certonymity",
-    url: "https://cdot.world/",
-    logo: "https://cdot.world/assets/logo-512.png",
+    url: SITE,
+    logo: abs("assets/logo-512.png"),
     email: "info@certonymity.com",
     address: {
       "@type": "PostalAddress",
@@ -78,13 +83,13 @@ const graph = [
     applicationCategory: "FinanceApplication",
     operatingSystem: "Any",
     provider: { "@id": ORG_ID },
-    url: "https://cdot.world/",
+    url: SITE,
     description:
       "cDot is the blockchain network built for secure, private, and instant payments. Rather than forcing everything onto a single chain, cDot is a family of purpose-built blockchains, each engineered for what it does best: identity, stablecoin settlement, and trading, operating as one trusted network.",
     hasPart: [
-      { "@id": "https://cdot.world/#c-layer" },
-      { "@id": "https://cdot.world/#p-layer" },
-      { "@id": "https://cdot.world/#t-layer" },
+      { "@id": `${SITE}#c-layer` },
+      { "@id": `${SITE}#p-layer` },
+      { "@id": `${SITE}#t-layer` },
     ],
   },
   layer(

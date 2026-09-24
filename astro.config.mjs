@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://cdot.world',
+  site: 'https://cdot.app',
   // No integrations: this site ships zero client-side framework code. Every
   // script in the output is inline and hand-written - the theme switch, the
   // header menu, the two forms, the app gallery - plus public/assets/map.js.

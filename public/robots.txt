@@ -1,4 +1,4 @@
-# cdot.world
+# cdot.app
 #
 # POLICY: let assistants read and cite this page live; do not let it be used as
 # training data. The two are controlled by different user-agents, so they are
@@ -67,4 +67,4 @@ Disallow: /
 
 # Structured summary for language models: /llms.txt
 
-Sitemap: https://cdot.world/sitemap.xml
+Sitemap: https://cdot.app/sitemap.xml

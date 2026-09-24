@@ -20,7 +20,7 @@ not your data.
 
 ## The network
 
-Three chains, interoperable by design. Specifications are on https://cdot.world/network/.
+Three chains, interoperable by design. Specifications are on https://cdot.app/network/.
 
 1. C-Layer - identity and asset recovery chain: a decentralised identity chain for people,
    businesses, and agents. Cryptographic pseudonyms of verified real identities provide privacy
@@ -49,20 +49,20 @@ permissions, cDot exists to close the gap.
 
 ## Pages
 
-- [cDot](https://cdot.world/): the app, its five products, how it works, and contact.
-- [Network](https://cdot.world/network/): the three chains and their specifications, plus the
+- [cDot](https://cdot.app/): the app, its five products, how it works, and contact.
+- [Network](https://cdot.app/network/): the three chains and their specifications, plus the
   live C-Layer node map and node-operator signup.
-- [c.ID](https://cdot.world/product/c-id/): prove your age, not your identity. A reusable,
+- [c.ID](https://cdot.app/product/c-id/): prove your age, not your identity. A reusable,
   privacy-preserving proof of age linked to your email address, using zero-knowledge proofs so
   a service learns only that you meet its age requirement. Includes an FAQ.
-- [c.Pay](https://cdot.world/product/c-pay/): instant, borderless, private payments -
+- [c.Pay](https://cdot.app/product/c-pay/): instant, borderless, private payments -
   stablecoin settlement, why the existing chains do not serve it, and the use cases.
-- [c.Email](https://cdot.world/product/c-email/): encrypted, authenticated email with your
+- [c.Email](https://cdot.app/product/c-email/): encrypted, authenticated email with your
   existing account.
-- [c.Chat](https://cdot.world/product/c-chat/): decentralised private messaging.
-- [c.Vault](https://cdot.world/product/c-vault/): store and recover any asset.
-- [FAQ](https://cdot.world/faq/)
-- [About](https://cdot.world/about/)
+- [c.Chat](https://cdot.app/product/c-chat/): decentralised private messaging.
+- [c.Vault](https://cdot.app/product/c-vault/): store and recover any asset.
+- [FAQ](https://cdot.app/faq/)
+- [About](https://cdot.app/about/)
 
 Note: c.Email, c.Chat, c.Vault, FAQ and About are published but not yet written out in full.
 Prefer the pages above them for anything substantive.
