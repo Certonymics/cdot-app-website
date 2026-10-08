@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import AppGallery from "../components/AppGallery.astro";
+import ContactFormScript from "../components/ContactFormScript.astro";
 import StoreDropdown from "../components/StoreDropdown.astro";
 
 /* These follow the TAGLINE, not the hero. The hero names the four products -
@@ -125,90 +126,6 @@ const HOW = [
   </div>
 </section>
 
-<!-- Contact form. POSTs to the Google Apps Script in scripts/contact-form.gs,
-     which records the enquiry in a sheet and emails the team. That script is a
-     separate deployment from the c.Email one - see its header comment. -->
-<script is:inline>
-(function(){
-  /* Public by design - see the header comment in scripts/contact-form.gs.
-     Replace with the /exec URL of the deployed cDot contact-form script. */
-  const CONTACT_FORM_URL =
-    'https://script.google.com/macros/s/AKfycbzkT4I_iMLiBBKRZeKdSEU2ohJVpfOFd4UA-tk2ss4p2YddFDbvU1OFPnjHcr0RaOHdUA/exec';
-
-  const form = document.getElementById('contactForm');
-  const statusEl = document.getElementById('cf-status');
-  const button = form.querySelector('button[type="submit"]');
-  const fields = form.querySelectorAll('.contact-fields .field, .cf-honeypot');
-  let sending = false;
-
-  /* The status line stays in the DOM and is emptied rather than hidden: a
-     display:none live region is not monitored, so un-hiding and filling it in
-     one task announces unreliably. */
-  function show(message, isError){
-    statusEl.textContent = message;
-    statusEl.classList.toggle('is-error', !!isError);
-    /* Errors move focus, so a screen-reader user is not left waiting for an
-       announcement that may not arrive. */
-    if(isError) statusEl.focus();
-  }
-
-  /* On success the fields and the button go away entirely, so there is no live
-     Send button sitting under a thank-you message inviting a second submission. */
-  function succeed(message){
-    fields.forEach(function(el){ el.hidden = true; });
-    button.hidden = true;
-    show(message, false);
-  }
-
-  function fail(message){
-    show(message || 'Something went wrong. Please try again, or email us directly at info@certonymity.com.', true);
-    sending = false;
-    button.disabled = false;
-    button.textContent = 'Send message';
-  }
-
-  form.addEventListener('submit', async function(e){
-    e.preventDefault();
-    if (sending) return;
-
-    /* Better to say so than to POST into the void and report success. */
-    if (!CONTACT_FORM_URL) {
-      return fail('This form is not connected yet. Please email us directly at info@certonymity.com.');
-    }
-
-    /* Sending state lives on the button only. Putting it in the status line too
-       would shift the layout mid-submit, since the status sits in the field column. */
-    sending = true;
-    button.disabled = true;
-    button.textContent = 'Sending…';
-    statusEl.textContent = '';
-
-    try {
-      /* No Content-Type header on purpose. Setting one makes this a preflighted
-         request, and Apps Script does not answer the OPTIONS probe, so the whole
-         submission fails before it starts. Sent as text/plain it is a "simple
-         request" and goes straight through; doPost reads the raw body regardless. */
-      /* Without a timeout a stalled connection leaves the button disabled on
-         "Sending…" forever, with no way to retry. */
-      const response = await fetch(CONTACT_FORM_URL, {
-        signal: AbortSignal.timeout(15000),
-        method: 'POST',
-        body: JSON.stringify({
-          email: document.getElementById('cf-email').value.trim(),
-          message: document.getElementById('cf-msg').value.trim(),
-          website: form.querySelector('[name="website"]').value
-        })
-      });
-      const result = await response.json().catch(function(){ return null; });
-      /* Only confirm what the server actually confirmed. */
-      if (!response.ok || !result || !result.ok) return fail(result && result.error);
-
-      succeed('Thanks — your message is on its way. We’ll reply to the address you gave us.');
-    } catch (err) {
-      fail();
-    }
-  });
-})();
-</script>
+<ContactFormScript />
 
 </Layout>

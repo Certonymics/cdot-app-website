@@ -1,0 +1,86 @@
+---
+/* One Resources card. The whole card is the link.
+ *
+ * The featured card spans the grid and carries a 3:1 image, which is the ratio
+ * the Studio's cover images are uploaded at, so it shows them uncropped. The
+ * rest use a 2:1 crop. Card images are decorative (alt=""): the title beside
+ * them says what the article is, and repeating it makes a screen reader read
+ * the same text twice.
+ */
+import { Image } from "astro:assets";
+import { byline } from "../lib/sanity.js";
+
+interface Props {
+  article: any;
+  featured?: boolean;
+}
+const { article, featured = false } = Astro.props;
+const { cover } = article;
+const Title = featured ? "h2" : "h3";
+
+/* Output size follows the source, so a small upload is never stretched. */
+const [maxW, ratio, steps] = featured ? [1200, 3, [600, 1200]] : [720, 2, [360, 720]];
+const width = Math.min(maxW, cover?.width ?? maxW);
+const height = Math.round(width / ratio);
+const widths = steps.filter((w) => w <= width);
+const sizes = featured
+  ? "(max-width: 1080px) 100vw, 1032px"
+  : "(max-width: 640px) 100vw, (max-width: 860px) 50vw, 340px";
+const meta = byline(article);
+---
+<a class:list={["post", { featured }]} href={`/resources/${article.slug}/`}>
+  <div class="post-media">
+    {cover?.url && (
+      <Image src={cover.url} {width} {height} {widths} {sizes} format="webp" alt="" loading="lazy" />
+    )}
+  </div>
+  <div class="post-body">
+    {meta && <p class="post-meta">{meta}</p>}
+    <Title class="post-title">{article.title}</Title>
+    <p class="post-excerpt">{article.excerpt}</p>
+  </div>
+</a>
+
+<style>
+  .post{
+    display:flex;flex-direction:column;overflow:hidden;
+    border:1px solid var(--line);border-radius:16px;
+    background:linear-gradient(160deg,var(--card),transparent 60%);
+    color:inherit;text-decoration:none;
+    transition:border-color .2s,transform .2s;
+  }
+  .post:hover{border-color:rgba(var(--accent-rgb),.4);transform:translateY(-3px)}
+  .post:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+  .post.featured{grid-column:1 / -1}
+
+  .post-media{aspect-ratio:2 / 1;background:var(--bg-2)}
+  .featured .post-media{aspect-ratio:3 / 1}
+  .post-media :global(img){display:block;width:100%;height:100%;object-fit:cover}
+
+  .post-body{display:flex;flex-direction:column;flex:1;padding:22px 24px 26px}
+  .featured .post-body{padding:30px 32px 34px}
+
+  .post-meta{
+    font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--cyan);margin-bottom:10px;
+  }
+  .post-title{
+    font-family:"Host Grotesk Variable","Host Grotesk","Geist Variable","Geist",sans-serif;
+    font-size:19.5px;font-weight:500;line-height:1.22;letter-spacing:-.005em;
+    margin-bottom:10px;transition:color .2s;
+  }
+  .featured .post-title{font-size:clamp(24px,4.4vw,32px);max-width:760px}
+  .post:hover .post-title{color:var(--cyan)}
+  .post-excerpt{
+    color:var(--ink-dim);font-size:15.5px;
+    display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;
+  }
+  .featured .post-excerpt{max-width:760px;font-size:clamp(15.5px,3.4vw,17.5px);-webkit-line-clamp:unset;display:block}
+
+  @media(max-width:640px){
+    .post:hover{transform:none}
+    .featured .post-media{aspect-ratio:2 / 1}
+    .post-body,.featured .post-body{padding:20px 20px 24px}
+  }
+  @media(prefers-reduced-motion:reduce){.post:hover{transform:none}}
+</style>

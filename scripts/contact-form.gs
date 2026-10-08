@@ -3,7 +3,7 @@
  *
  * Not part of the site build. This file is the source of the Google Apps Script
  * that receives contact enquiries straight from the browser (see the contact
- * form script in src/pages/index.astro), appends them to a spreadsheet, and
+ * form script in src/components/ContactFormScript.astro), appends them to a spreadsheet, and
  * emails the team. It is kept in the repo so the script is versioned alongside
  * the form it serves.
  *
@@ -29,7 +29,7 @@
  *        Who has access:    Anyone
  *      "Anyone" makes the URL callable without a Google login. It does not make
  *      the spreadsheet readable — this script only ever appends.
- *   5. Copy the /exec URL into CONTACT_FORM_URL in src/pages/index.astro.
+ *   5. Copy the /exec URL into CONTACT_FORM_URL in src/components/ContactFormScript.astro.
  *
  * Re-deploy after editing, or the live endpoint keeps running the old version.
  */
@@ -43,7 +43,8 @@ const NOTIFY_TO = 'info@certonymity.com'
 
 // Long enough for a real enquiry, short enough that the sheet cell stays usable
 // and a bot can't dump megabytes into it. Apps Script caps a cell at 50k chars.
-// Keep in sync with the maxlength on the textarea in src/pages/index.astro.
+// Keep in sync with the maxlength on the textareas in src/pages/index.astro and
+// src/pages/contact.astro.
 const MAX_MESSAGE_LENGTH = 5000
 
 // Must stay empty. The form calls this script directly from the browser, so any

@@ -9,9 +9,15 @@
  *
  * 404 is excluded - it is not a destination, and listing it invites indexing of
  * a page that should never appear in results.
+ *
+ * Dynamic routes ([slug].astro) are skipped by the glob - "/resources/[slug]/"
+ * is not a URL - and their pages are listed from the data that generates them,
+ * with a lastmod, which is the one thing the static pages cannot offer.
  */
+import { getArticles } from "../lib/sanity.js";
+
 export async function GET({ site }) {
-  const files = Object.keys(import.meta.glob("./**/*.astro"));
+  const files = Object.keys(import.meta.glob("./**/*.astro")).filter((f) => !f.includes("["));
 
   const routes = files
     .map((f) =>
@@ -25,9 +31,16 @@ export async function GET({ site }) {
     .map((r) => (r === "" ? "/" : `/${r}/`))
     .sort();
 
-  const urls = routes
-    .map((r) => `  <url><loc>${new URL(r, site).href}</loc></url>`)
-    .join("\n");
+  const articles = await getArticles();
+
+  const urls = [
+    ...routes.map((r) => `  <url><loc>${new URL(r, site).href}</loc></url>`),
+    ...articles.map(
+      (a) =>
+        `  <url><loc>${new URL(`/resources/${a.slug}/`, site).href}</loc>` +
+        `<lastmod>${a.modified.slice(0, 10)}</lastmod></url>`,
+    ),
+  ].join("\n");
 
   return new Response(
     `<?xml version="1.0" encoding="UTF-8"?>\n` +

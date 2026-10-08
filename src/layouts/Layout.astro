@@ -17,8 +17,26 @@ interface Props {
      canonical as well as adding the directive: a 404 naming itself canonical
      is asserting that the missing URL is the right one to index. */
   noindex?: boolean;
+  /* Article pages. `ogImage` is an absolute URL to a 1200x630 image and
+     replaces the site-wide card; `ogImageAlt` describes it. `extraSchema` is
+     appended to the JSON-LD graph, and may reference ORG_ID's
+     https://<site>/#certonymity by @id. */
+  ogType?: "website" | "article";
+  ogImage?: string;
+  ogImageAlt?: string;
+  extraSchema?: object[];
 }
-const { title, description, ogTitle, ogDescription, noindex = false } = Astro.props;
+const {
+  title,
+  description,
+  ogTitle,
+  ogDescription,
+  noindex = false,
+  ogType = "website",
+  ogImage,
+  ogImageAlt,
+  extraSchema = [],
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
 /* Structured data. A @graph rather than a single Organization node: the three
@@ -74,7 +92,7 @@ const graph = [
       addressCountry: "GB",
     },
     description:
-      "Certonymity Ltd builds cDot, purpose built blockchain infrastructure for verified identity and money movement at scale.",
+      "Certonymity Ltd builds cDot, the app for secure identity, communication and payments, and the purpose-built blockchain network behind it.",
   },
   {
     "@type": "SoftwareApplication",
@@ -85,7 +103,7 @@ const graph = [
     provider: { "@id": ORG_ID },
     url: SITE,
     description:
-      "cDot is the blockchain network built for secure, private, and instant payments. Rather than forcing everything onto a single chain, cDot is a family of purpose-built blockchains, each engineered for what it does best: identity, stablecoin settlement, and trading, operating as one trusted network.",
+      "cDot is the app for secure identity, communication and payments: stay private online and share only what you want, when you want. Underneath, it is a blockchain network, a family of purpose-built chains each engineered for what it does best (identity, stablecoin settlement, and trading) operating as one trusted network.",
     hasPart: [
       { "@id": `${SITE}#c-layer` },
       { "@id": `${SITE}#p-layer` },
@@ -136,7 +154,7 @@ const graph = [
   ),
 ];
 
-const orgSchema = { "@context": "https://schema.org", "@graph": graph };
+const orgSchema = { "@context": "https://schema.org", "@graph": [...graph, ...extraSchema] };
 ---
 
 <!doctype html>
@@ -225,13 +243,13 @@ const orgSchema = { "@context": "https://schema.org", "@graph": graph };
 <meta property="og:title" content={ogTitle ?? title} />
 <meta property="og:description" content={ogDescription ?? description} />
 <meta property="og:url" content={canonical} />
-<meta property="og:type" content="website" />
+<meta property="og:type" content={ogType} />
 <meta property="og:site_name" content="cDot" />
 <meta property="og:locale" content="en_GB" />
-<meta property="og:image" content={new URL('/assets/og.png', Astro.site).href} />
+<meta property="og:image" content={ogImage ?? new URL('/assets/og.png', Astro.site).href} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
-<meta property="og:image:alt" content="cDot - secure identity, communication and payments" />
+<meta property="og:image:alt" content={ogImage ? (ogImageAlt ?? title) : "cDot - secure identity, communication and payments"} />
 <!-- The only twitter:* tag worth setting: X falls back to the og:* tags for
      title, description and image, but needs this to use the large card. -->
 <meta name="twitter:card" content="summary_large_image" />

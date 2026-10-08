@@ -1,0 +1,32 @@
+---
+/* Shared frame for the text pages (terms, privacy, support): a compact hero
+   with the title and, where there is one, the last-updated date, then the copy
+   in the .prose column. The copy is passed in as a slot, as plain HTML. */
+import Layout from "./Layout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  heading: string;
+  updated?: string;
+}
+const { title, description, heading, updated } = Astro.props;
+---
+<Layout title={title} description={description}>
+  <div class="page-hero page-hero--compact">
+    <div class="wrap">
+      <h1>{heading}</h1>
+      {updated && <p class="sub">Last updated: {updated}</p>}
+    </div>
+  </div>
+  <section class="legal-body">
+    <div class="wrap">
+      <div class="prose legal"><slot /></div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .legal-body{padding-top:24px}
+  .legal-body .prose{max-width:720px}
+</style>

@@ -1,0 +1,57 @@
+---
+/* Resources listing. Ported from c.email-website's Resources.jsx.
+ *
+ * The articles live in the c.Email Sanity project and are read at build time
+ * (src/lib/sanity.js), so this page is plain static HTML - the original's
+ * loading state, client-side fetch and embedded-data handoff are not needed.
+ *
+ * Rebuilt on this site's tokens: the featured article is a full-width card with
+ * a 3:1 image instead of a 620px-tall fixed-height tile, and the cards size to
+ * their content instead of to a fixed 300px, so a long title or excerpt cannot
+ * be clipped.
+ */
+import Layout from "../../layouts/Layout.astro";
+import PostCard from "../../components/PostCard.astro";
+import { getArticles, pickFeatured } from "../../lib/sanity.js";
+
+const title = "Resources — cDot";
+const description = "Privacy insights, news, and guides from the cDot team.";
+
+const articles = await getArticles();
+const featured = pickFeatured(articles);
+const rest = articles.filter((a) => a !== featured);
+---
+<Layout title={title} description={description}>
+
+<div class="page-hero">
+  <div class="wrap">
+    <h1>Resources</h1>
+    <p class="sub">Privacy insights, news, and guides from the cDot team.</p>
+  </div>
+</div>
+
+<section class="resources">
+  <div class="wrap">
+    {articles.length === 0 ? (
+      <p class="empty">No articles yet — check back soon.</p>
+    ) : (
+      <div class="post-grid">
+        {featured && <PostCard article={featured} featured />}
+        {rest.map((article) => <PostCard article={article} />)}
+      </div>
+    )}
+  </div>
+</section>
+
+</Layout>
+
+<style>
+  .resources{padding-top:56px}
+  .post-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+  .empty{color:var(--ink-dim)}
+  @media(max-width:860px){.post-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:640px){
+    .resources{padding-top:36px}
+    .post-grid{grid-template-columns:minmax(0,1fr)}
+  }
+</style>

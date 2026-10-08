@@ -21,8 +21,8 @@ const DEMO = "https://agepass.xyz/";
 
 const STEPS = [
   {
-    t: "Get c.Email",
-    html: `Download the c.Email app for <a href="${IOS}" target="_blank" rel="noopener noreferrer">iOS</a> or <a href="${ANDROID}" target="_blank" rel="noopener noreferrer">Android</a> to get started.`,
+    t: "Get cDot",
+    html: `Download the cDot app for <a href="${IOS}" target="_blank" rel="noopener noreferrer">iOS</a> or <a href="${ANDROID}" target="_blank" rel="noopener noreferrer">Android</a> to get started.`,
   },
   {
     t: "Prove your identity",
@@ -30,7 +30,7 @@ const STEPS = [
   },
   {
     t: "Get your c.ID",
-    html: "Get your c.ID along with full access to c.Email&rsquo;s encryption features.",
+    html: "Get your c.ID along with full access to cDot&rsquo;s encryption features.",
   },
   {
     t: "Verify your age anonymously",
@@ -46,12 +46,12 @@ const FAQ = [
   {
     q: "What is c.ID?",
     html: `<p>c.ID is a tool that lets you anonymously pass age verification checks online using only your email address, while remaining fully compliant with rules around age-restricted services.</p>
-           <p>You automatically get a c.ID once you verify your identity with c.Email, our app for secure, private email.</p>`,
+           <p>You automatically get a c.ID once you verify your identity with cDot, our app for secure, private email.</p>`,
   },
   {
     q: "How does it work?",
-    html: `<p>Your c.ID is linked to your email address, so to get one, you first need to download c.Email, our app for secure email.</p>
-           <p>You then prove your identity on a one-time basis with an existing ID and a liveness check. This process takes around 30 seconds, and your identity information is stored only on your device. Once you&rsquo;ve done this, you&rsquo;ll have a c.ID (as well as email encryption at the touch of a button via c.Email).</p>
+    html: `<p>Your c.ID is linked to your email address, so to get one, you first need to download cDot, our app for secure email.</p>
+           <p>You then prove your identity on a one-time basis with an existing ID and a liveness check. This process takes around 30 seconds, and your identity information is stored only on your device. Once you&rsquo;ve done this, you&rsquo;ll have a c.ID (as well as email encryption at the touch of a button via cDot).</p>
            <p>You can then sign up to as many age-gated services as you want with the email address you used. You won&rsquo;t have to prove your age to any of them &mdash; instead, your c.ID allows them to get a zero-knowledge proof* that you pass their age requirement, without ever seeing your data or learning who you are.</p>
            <p>All of this happens under the hood &mdash; you don&rsquo;t need to understand cryptography or zero-knowledge proofs to use c.ID.</p>
            <p class="faq-note">*Zero-knowledge proof: a cryptographic protocol that allows one party to prove the truth of a statement to another, without sharing what the statement actually is.</p>`,
@@ -78,9 +78,9 @@ const FAQ = [
 <div class="page-hero">
   <div class="wrap">
     <h1>Prove your age, not your identity</h1>
-    <p class="sub">Verify with c.Email to get your c.ID: a reusable, privacy-preserving proof of age linked to your email address.</p>
+    <p class="sub">Verify with cDot to get your c.ID: a reusable, privacy-preserving proof of age linked to your email address.</p>
     <div class="hero-ctas">
-      <StoreDropdown label="Download c.Email" id="dl-hero" />
+      <StoreDropdown label="Download cDot" id="dl-hero" />
       <a class="btn btn-ghost" href={DEMO} target="_blank" rel="noopener noreferrer">View demo</a>
     </div>
   </div>
@@ -192,7 +192,7 @@ const FAQ = [
       <StoreDropdown
         label="Get your c.ID"
         id="dl-how"
-        itemLabels={["c.Email for iOS", "c.Email for Android"]}
+        itemLabels={["cDot for iOS", "cDot for Android"]}
       />
       <a class="btn btn-ghost" href={DEMO} target="_blank" rel="noopener noreferrer">View an existing c.ID</a>
     </div>

@@ -1,0 +1,93 @@
+---
+/* Copied from c.email-website (Contact.jsx). cDot inherits c.Email's contact
+ * form, so this posts to c.Email's Apps Script (c.email-website/scripts/
+ * contact-form.gs), which already does the routing: the enquiry type decides
+ * whether support@, press@ or info@ is emailed, and whether a message is
+ * required. The values below must match that script's ROUTING keys - it rejects
+ * any other type. Enquiries land in c.Email's sheet.
+ *
+ * The homepage form is a different thing: it posts to cDot's own script and has
+ * no type. The handler is shared (ContactFormScript). */
+import LegalPage from "../layouts/LegalPage.astro";
+import ContactFormScript from "../components/ContactFormScript.astro";
+
+/* Public by design: the script only appends rows and has no doGet. */
+const CONTACT_FORM_URL =
+  "https://script.google.com/macros/s/AKfycbyCJP9Wi23Qm7ZpR8AuCANX236tIkad7l7Qr7yucq8A6sP2Zx3Qtep3NQ1zFO6-R18jgg/exec";
+
+/* Values must match ROUTING in contact-form.gs. */
+const ENQUIRY_TYPES = [
+  { value: "support", label: "Support" },
+  { value: "press", label: "Press" },
+  { value: "business", label: "Business demo request" },
+  { value: "other", label: "Other" },
+];
+const NO_MESSAGE_REQUIRED = "business";
+---
+<LegalPage
+  title="Contact — cDot"
+  description="Get in touch with the cDot team."
+  heading="Contact us"
+>
+  <p>Send us a message using the form below. If you&rsquo;d prefer to email us directly, see the contact emails below.</p>
+  <p>You can view our <a href="https://drive.google.com/drive/folders/1UYjTCbeFVcCuDT5c1Arh30lFyIRep-kJ?usp=sharing" target="_blank" rel="noopener noreferrer">press kit here</a>.</p>
+  <p>For customer support, you can visit our <a href="https://support.certonymity.com/hc/c-email/en" target="_blank" rel="noopener noreferrer">help centre</a>.</p>
+
+  <form
+    id="contactForm"
+    class="contact-page-form"
+    data-endpoint={CONTACT_FORM_URL}
+    data-message-optional-for={NO_MESSAGE_REQUIRED}
+  >
+    <div class="contact-fields">
+      <div class="field">
+        <label for="cf-type">What is your enquiry about?</label>
+        <select id="cf-type" name="type" required>
+          {ENQUIRY_TYPES.map((t) => <option value={t.value}>{t.label}</option>)}
+        </select>
+      </div>
+      <div class="field">
+        <label for="cf-email">Your email address</label>
+        <input id="cf-email" type="email" name="email" placeholder="name@company.com" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="cf-msg">Your message</label>
+        <textarea id="cf-msg" name="message" maxlength="5000" required></textarea>
+        <p class="field-hint" id="cf-msg-hint" hidden>Just leave your email address and we&rsquo;ll be in touch to arrange your demo.</p>
+      </div>
+      <!-- Honeypot: hidden from people, filled in by bots. -->
+      <input class="cf-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <!-- Replaces the fields above on success; also carries error text. -->
+      <p class="cf-status" id="cf-status" role="status" aria-live="polite" tabindex="-1"></p>
+    </div>
+    <noscript>
+      <p class="cf-status is-error">This form needs JavaScript. Please email
+      <a href="mailto:info@certonymity.com">info@certonymity.com</a> instead.</p>
+    </noscript>
+    <button class="btn btn-primary" type="submit">Send message</button>
+  </form>
+
+  <h2>Email us directly</h2>
+  <p>For demo requests or business enquiries about cDot, please email <a href="mailto:info@certonymity.com">info@certonymity.com</a>.</p>
+  <p>For customer support or questions about using cDot, please email <a href="mailto:support@certonymity.com">support@certonymity.com</a>.</p>
+  <p>For press enquiries, please email <a href="mailto:press@certonymity.com">press@certonymity.com</a>.</p>
+  <p>For any other enquiries, please email <a href="mailto:info@certonymity.com">info@certonymity.com</a>.</p>
+
+  <h2>Our address</h2>
+  <address>
+    Certonymity Ltd<br>
+    86&ndash;87 Campden Street<br>
+    London<br>
+    W8 7EN
+  </address>
+</LegalPage>
+
+<ContactFormScript />
+
+<style>
+  .contact-page-form{max-width:560px;margin:2em 0 2.5em}
+  .contact-page-form .btn{margin-top:6px}
+  /* The homepage form stretches its message box to match the address beside it
+     and pins it; here it is a plain column, so let it be resized. */
+  .contact-page-form :global(.contact-fields .field:last-of-type textarea){min-height:160px;resize:vertical}
+</style>

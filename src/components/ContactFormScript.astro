@@ -1,0 +1,118 @@
+---
+/* Contact form. POSTs to the Google Apps Script in scripts/contact-form.gs,
+ * which records the enquiry in a sheet and emails the team. That script is a
+ * separate deployment from the c.Email one - see its header comment.
+ *
+ * Shared by the homepage form and /contact: both render a <form id="contactForm">
+ * with #cf-email, #cf-msg, #cf-status, a .cf-honeypot and a .contact-fields
+ * wrapper around the .field blocks, which is what this script looks for.
+ *
+ * /contact adds three optional things, all declared on the form itself:
+ *   data-endpoint                  posts there instead of to CONTACT_FORM_URL
+ *   a #cf-type <select>            its value is sent as `type`
+ *   data-message-optional-for      the type for which the message is optional;
+ *                                  #cf-msg-hint is shown and the label changes
+ */
+---
+<script is:inline>
+(function(){
+  /* Public by design - see the header comment in scripts/contact-form.gs.
+     Replace with the /exec URL of the deployed cDot contact-form script. */
+  const CONTACT_FORM_URL =
+    'https://script.google.com/macros/s/AKfycbzkT4I_iMLiBBKRZeKdSEU2ohJVpfOFd4UA-tk2ss4p2YddFDbvU1OFPnjHcr0RaOHdUA/exec';
+
+  const form = document.getElementById('contactForm');
+  const statusEl = document.getElementById('cf-status');
+  const button = form.querySelector('button[type="submit"]');
+  const endpoint = form.dataset.endpoint || CONTACT_FORM_URL;
+  const typeSel = document.getElementById('cf-type');
+  const msgEl = document.getElementById('cf-msg');
+  const msgLabel = form.querySelector('label[for="cf-msg"]');
+  const msgHint = document.getElementById('cf-msg-hint');
+  const optionalFor = form.dataset.messageOptionalFor;
+  const fields = form.querySelectorAll('.contact-fields .field, .cf-honeypot');
+  let sending = false;
+
+  /* A demo request needs nothing but an address - there is no question to ask,
+     so requiring a message only puts a hurdle in front of a warm lead. The
+     Apps Script makes the same exemption; both sides have to agree or the server
+     rejects what the form let through. */
+  function syncType(){
+    if (!typeSel || !optionalFor) return;
+    const optional = typeSel.value === optionalFor;
+    msgEl.required = !optional;
+    msgLabel.textContent = optional ? 'Your message (optional)' : 'Your message';
+    if (msgHint) msgHint.hidden = !optional;
+  }
+  if (typeSel) { typeSel.addEventListener('change', syncType); syncType(); }
+
+  /* The status line stays in the DOM and is emptied rather than hidden: a
+     display:none live region is not monitored, so un-hiding and filling it in
+     one task announces unreliably. */
+  function show(message, isError){
+    statusEl.textContent = message;
+    statusEl.classList.toggle('is-error', !!isError);
+    /* Errors move focus, so a screen-reader user is not left waiting for an
+       announcement that may not arrive. */
+    if(isError) statusEl.focus();
+  }
+
+  /* On success the fields and the button go away entirely, so there is no live
+     Send button sitting under a thank-you message inviting a second submission. */
+  function succeed(message){
+    fields.forEach(function(el){ el.hidden = true; });
+    button.hidden = true;
+    show(message, false);
+  }
+
+  function fail(message){
+    show(message || 'Something went wrong. Please try again, or email us directly at info@certonymity.com.', true);
+    sending = false;
+    button.disabled = false;
+    button.textContent = 'Send message';
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if (sending) return;
+
+    /* Better to say so than to POST into the void and report success. */
+    if (!endpoint) {
+      return fail('This form is not connected yet. Please email us directly at info@certonymity.com.');
+    }
+
+    /* Sending state lives on the button only. Putting it in the status line too
+       would shift the layout mid-submit, since the status sits in the field column. */
+    sending = true;
+    button.disabled = true;
+    button.textContent = 'Sending…';
+    statusEl.textContent = '';
+
+    try {
+      /* No Content-Type header on purpose. Setting one makes this a preflighted
+         request, and Apps Script does not answer the OPTIONS probe, so the whole
+         submission fails before it starts. Sent as text/plain it is a "simple
+         request" and goes straight through; doPost reads the raw body regardless. */
+      /* Without a timeout a stalled connection leaves the button disabled on
+         "Sending…" forever, with no way to retry. */
+      const response = await fetch(endpoint, {
+        signal: AbortSignal.timeout(15000),
+        method: 'POST',
+        body: JSON.stringify({
+          type: typeSel ? typeSel.value : undefined,
+          email: document.getElementById('cf-email').value.trim(),
+          message: document.getElementById('cf-msg').value.trim(),
+          website: form.querySelector('[name="website"]').value
+        })
+      });
+      const result = await response.json().catch(function(){ return null; });
+      /* Only confirm what the server actually confirmed. */
+      if (!response.ok || !result || !result.ok) return fail(result && result.error);
+
+      succeed('Thanks — your message is on its way. We’ll reply to the address you gave us.');
+    } catch (err) {
+      fail();
+    }
+  });
+})();
+</script>

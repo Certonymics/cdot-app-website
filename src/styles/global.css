@@ -30,9 +30,10 @@
   }
   .nav{display:flex;align-items:center;justify-content:space-between;height:80px}
   @media(max-width:640px){.nav{height:72px}}
-  .brand{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-decoration:none;min-width:0}
-  .brand svg.logomark{height:36px;width:87px;display:block;flex-shrink:0}
-  .brand .tag{font-size:11px;font-weight:500;color:var(--brand-text);letter-spacing:.06em;line-height:1.2}
+  .brand{display:flex;flex-direction:row;align-items:center;gap:14px;text-decoration:none;min-width:0}
+  .brand svg.logomark{height:50px;width:121px;display:block;flex-shrink:0}
+  @media(max-width:640px){.brand svg.logomark{height:36px;width:87px}}
+  .brand .tag{font-size:11px;font-weight:500;color:var(--brand-text);letter-spacing:.06em;line-height:1.3;max-width:132px;text-wrap:balance;border-left:1px solid var(--line);padding-left:14px}
   .nav a.link{color:var(--ink-dim);text-decoration:none;font-size:14.5px;margin-left:26px;transition:color .2s}
   .nav a.link:hover{color:var(--ink)}
   /* .nav is space-between, so adding a third child stopped distributing
@@ -74,7 +75,7 @@
     transition:background-color .2s,color .2s}
   .menu-item:hover{background:rgba(var(--accent-rgb),.10);color:var(--ink)}
 
-  /* Theme toggle */
+/* Theme toggle — kept for re-enabling; button is commented out in Header.astro */
   .theme-toggle{
     display:grid;place-items:center;width:34px;height:34px;flex-shrink:0;
     background:none;border:1px solid transparent;border-radius:9px;
@@ -85,18 +86,14 @@
   .theme-toggle:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
   .theme-toggle svg{width:18px;height:18px;display:block;
     fill:none;stroke:currentColor;stroke-width:1.7}
-  /* The sun circle reads better filled at this size. */
   .theme-toggle .i-sun circle{fill:currentColor;stroke:none}
   .theme-toggle .i-moon path{fill:currentColor;stroke:none}
-  /* The button offers the scheme you are NOT in, so the light default shows the
-     moon. Only two states to express, since light is unconditional and dark is
-     opt-in. */
   .theme-toggle .i-sun{display:none}
   :root[data-theme="dark"] .theme-toggle .i-moon{display:none}
   :root[data-theme="dark"] .theme-toggle .i-sun{display:block}
   @media(max-width:640px){.theme-toggle{width:32px;height:32px}}
 
-  /* Burger button — hidden on desktop */
+/* Burger button — hidden on desktop */
   .burger{display:none;flex-direction:column;justify-content:space-between;width:22px;height:16px;
     background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
   .burger span{display:block;height:2px;border-radius:2px;background:var(--ink-dim);
@@ -105,9 +102,8 @@
   .burger.is-open span:nth-child(2){opacity:0}
   .burger.is-open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   @media(max-width:640px){
-    /* Logo + tagline side by side */
-    .brand{flex-direction:row;align-items:center;gap:10px}
-    .brand .tag{font-size:10px;letter-spacing:.04em;line-height:1.3;max-width:120px}
+    .brand{gap:9px}
+    .brand .tag{font-size:10px;letter-spacing:.04em;max-width:112px;padding-left:9px}
     /* Burger visible, nav links hidden by default */
     .burger{display:flex}
     .nav nav{
@@ -249,6 +245,13 @@
   }
   @media(max-width:640px){
     .page-hero .wrap{padding-top:124px;padding-bottom:64px}
+  }
+  /* Text pages (terms, privacy, support): the title and one line, not a
+     billboard. Placed after the rules above so it wins at equal specificity. */
+  .page-hero--compact{min-height:0}
+  .page-hero--compact .wrap{padding-top:136px;padding-bottom:48px}
+  @media(max-width:640px){
+    .page-hero--compact .wrap{padding-top:108px;padding-bottom:32px}
   }
   h1{
     font-family:"Host Grotesk Variable","Host Grotesk","Geist Variable","Geist",sans-serif;
@@ -565,17 +568,19 @@
   @media(max-width:820px){.contact-grid{grid-template-columns:1fr}}
   .field{margin-bottom:18px}
   .field label{display:block;font-size:13.5px;color:var(--ink-dim);margin-bottom:7px;letter-spacing:.02em}
-  .field input,.field textarea{
+  .field input,.field select,.field textarea{
     width:100%;background:rgba(var(--accent-rgb),.05);border:1px solid var(--line);
     border-radius:10px;padding:12px 14px;color:var(--ink);font-size:15.5px;
     font-family:inherit;transition:border-color .2s;
   }
-  .field input:focus,.field textarea:focus{outline:none;border-color:var(--cyan)}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--cyan)}
+  .field select{cursor:pointer}
+  .field-hint{margin-top:8px;font-size:13.5px;color:var(--ink-faint)}
   .field textarea{min-height:130px;resize:vertical}
   /* iOS Safari zooms the page in on any field under 16px and does not zoom back
      out, so the reader is left pinching to escape. 16px is the threshold. */
   @media(max-width:640px){
-    .field input,.field textarea{font-size:16px}
+    .field input,.field select,.field textarea{font-size:16px}
   }
   /* C-layer node signup (/network). Metrics taken from the same form on
      c.email-website, which is the reference: 576px cap (max-w-xl), 16px gap,
@@ -630,37 +635,73 @@
   .addr a:hover{text-decoration:underline}
 
   /* Footer */
-  footer{border-top:1px solid var(--line);padding:26px 0;background:var(--bg-0)}
+  footer{border-top:1px solid var(--line);padding:48px 0 40px;background:var(--bg-0)}
   /* font-size sits on the container, not on the elements: the footer holds a
-     mix of <a>, <span> and <div>, and hanging the size off any one of them
-     means it silently reverts the moment an item changes tag. */
-  .foot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:13.5px}
-  .foot p{color:var(--ink-faint)}
-  /* Four siblings under space-between: the gaps between them come out equal
-     whatever each item's own width is, which is why none of these carry flex:1.
-     Giving them equal WIDTHS instead would centre each in its own column and
-     leave the gaps visibly uneven, since the mark and the address are nothing
-     like the same size. */
-  /* The mark is the tallest thing in the row, so it alone sets that row's
-     height - trimming the padding without trimming this leaves the band the
-     same depth. 63px keeps the logo's own 2.416 ratio. */
+     mix of <a>, <p> and <nav>, and hanging the size off any one of them means
+     it silently reverts the moment an item changes tag. */
+  .foot{
+    display:flex;align-items:flex-start;justify-content:space-between;
+    flex-wrap:wrap;gap:28px 48px;font-size:14px;
+  }
+  /* The mark keeps the logo's own 2.416 ratio: 26px tall, 63px wide. */
   .foot-mark{height:26px;width:63px;display:block}
-  .foot-copy{margin:0;color:var(--ink-dim)}
+  .foot-links{display:flex;flex-wrap:wrap;gap:10px 32px}
   .foot-link{color:var(--ink-dim);text-decoration:none;transition:color .2s}
   .foot-link:hover{color:var(--cyan)}
-  /* Regulatory note, in its own band under the row and divided from it by a
-     rule. Deliberately the quietest thing on the page - it has to be present
-     and legible, not read before the address. Outside .foot, so it does not
-     pick up that row's flex layout or its 13.5px. */
+  .foot-copy{margin-top:32px;font-size:13.5px;color:var(--ink-faint)}
+  .foot-copy .foot-link{color:inherit}
+  .foot-copy .foot-link:hover{color:var(--cyan)}
+  /* Regulatory note, in its own band under the copyright and divided from it by
+     a rule. Deliberately the quietest thing on the page - it has to be present
+     and legible, not read before the address. */
   .foot-note{
     margin-top:22px;border-top:1px solid var(--line);padding-top:18px;
     font-size:12px;line-height:1.65;color:var(--ink-faint);max-width:820px;
   }
-  /* Narrow: stack, and let the row gap do the spacing. */
-  @media(max-width:560px){
-    .foot{flex-direction:column;text-align:center}
-    .foot-note{text-align:center;margin-top:24px}
+  /* Narrow: stack, left-aligned as in the c.Email footer, with a tighter link
+     row. */
+  @media(max-width:640px){
+    footer{padding:40px 0 32px}
+    .foot-links{gap:8px 20px;font-size:13px}
+    .foot-copy{margin-top:28px}
   }
+
+  /* Long-form text: article bodies (injected HTML from Sanity) and the legal
+     pages. Global rather than scoped because Astro's scoping attribute never
+     reaches elements that arrive as a string or through a slot. */
+  .prose{font-size:clamp(16px,3.4vw,17.5px);line-height:1.75;color:var(--ink-dim)}
+  .prose > :first-child{margin-top:0}
+  .prose p{margin:0 0 1.25em;overflow-wrap:break-word}
+  .prose address{font-style:normal;margin:0 0 1.25em}
+  .prose h2,.prose h3{
+    font-family:"Host Grotesk Variable","Host Grotesk","Geist Variable","Geist",sans-serif;
+    font-weight:500;letter-spacing:-.005em;color:var(--ink);
+  }
+  .prose h2{font-size:clamp(23px,4.6vw,30px);line-height:1.18;margin:2.1em 0 .6em}
+  .prose h3{font-size:clamp(19px,3.8vw,22px);line-height:1.25;margin:1.8em 0 .5em}
+  .prose strong{color:var(--ink);font-weight:600}
+  .prose a{
+    color:var(--blue);text-decoration:underline;
+    text-decoration-color:rgba(var(--accent-rgb),.4);text-underline-offset:3px;
+    transition:text-decoration-color .2s;
+  }
+  .prose a:hover{text-decoration-color:currentColor}
+  .prose ul,.prose ol{margin:0 0 1.25em;padding-left:1.4em}
+  .prose li{margin-bottom:.5em;padding-left:.2em}
+  .prose li::marker{color:var(--cyan)}
+  .prose li > ul,.prose li > ol{margin:.5em 0 0}
+  .prose .callout{
+    margin:2em 0;padding:20px 24px;border-radius:14px;
+    border:1px solid var(--line);background:rgba(var(--accent-rgb),.06);
+  }
+  .prose .callout p{margin:0;color:var(--ink)}
+  .prose img{
+    display:block;width:100%;height:auto;margin:2em 0;
+    border:1px solid var(--line);border-radius:12px;
+  }
+  /* Legal pages: many short numbered sections, so headings step down a size. */
+  .prose.legal h2{font-size:clamp(20px,3.8vw,24px);margin:2em 0 .5em}
+  .prose.legal h3{font-size:clamp(17px,3.4vw,19px);margin:1.5em 0 .4em}
 
   /* Respect a reduced-motion preference: the node and badge pings are infinite
      animations, and there can be one per node. */

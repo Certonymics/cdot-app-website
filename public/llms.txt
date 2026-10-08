@@ -2,7 +2,7 @@
 
 > cDot is the app for secure identity, email, messaging, and payments. When apps and websites
 > track everything you do, cDot keeps you private online: share only what you want, when you
-> want. Built by Certonymity Ltd (London, UK), the team behind c.Email (https://c.email/).
+> want. Built by Certonymity Ltd (London, UK).
 
 cDot has two faces, and both are on this site. For people, it is an app: one verified identity
 that works across email, messaging, payments and age checks, without handing your personal data
@@ -57,14 +57,20 @@ permissions, cDot exists to close the gap.
   a service learns only that you meet its age requirement. Includes an FAQ.
 - [c.Pay](https://cdot.app/product/c-pay/): instant, borderless, private payments -
   stablecoin settlement, why the existing chains do not serve it, and the use cases.
-- [c.Email](https://cdot.app/product/c-email/): encrypted, authenticated email with your
-  existing account.
+- [Email](https://cdot.app/product/c-email/): send authenticated, end-to-end encrypted
+  messages from your existing email address. Why use it, how it works, and an FAQ. Available on
+  iOS, Android, and as a Chrome extension.
 - [c.Chat](https://cdot.app/product/c-chat/): decentralised private messaging.
 - [c.Vault](https://cdot.app/product/c-vault/): store and recover any asset.
+- [For developers](https://cdot.app/product/developers/): cut onboarding times and KYC costs
+  with reusable, cross-platform identity verification. Integrate in five minutes and receive
+  proofs instead of storing user data. Includes an FAQ.
+- [Resources](https://cdot.app/resources/): articles from the team on privacy, email security
+  and why cDot exists. Each article is its own page under https://cdot.app/resources/.
 - [FAQ](https://cdot.app/faq/)
 - [About](https://cdot.app/about/)
 
-Note: c.Email, c.Chat, c.Vault, FAQ and About are published but not yet written out in full.
+Note: c.Chat, c.Vault, FAQ and About are published but not yet written out in full.
 Prefer the pages above them for anything substantive.
 
 ## Data

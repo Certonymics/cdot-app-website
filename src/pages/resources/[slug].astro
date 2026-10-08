@@ -1,0 +1,210 @@
+---
+/* Resources article. Ported from c.email-website's ResourcesArticle.jsx.
+ *
+ * One static page per article in Sanity, generated at build time. The body is
+ * Portable Text rendered to HTML (src/lib/portable-text.js) and styled below
+ * under .prose (global.css, shared with the legal pages).
+ *
+ * Changes from the original: the "Related" list is rendered once and moved by
+ * CSS (sticky sidebar on desktop, under the article on mobile) rather than
+ * built twice; the CTA sits at the end of the article column; a relative link
+ * in a CTA button is resolved against c.email, because the Studio's hint for
+ * that field ("e.g. /features") assumes it is the c.Email site; and each page
+ * carries Article structured data and its own social image.
+ */
+import { Image, getImage } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import StoreDropdown from "../../components/StoreDropdown.astro";
+import { getArticles, relatedTo, byline } from "../../lib/sanity.js";
+import { renderBody } from "../../lib/portable-text.js";
+
+export async function getStaticPaths() {
+  const articles = await getArticles();
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: { article, related: relatedTo(articles, article.slug) },
+  }));
+}
+
+const { article, related } = Astro.props;
+const { cover, cta = {} } = article;
+
+const title = `${article.title} — cDot`;
+const url = new URL(`/resources/${article.slug}/`, Astro.site).href;
+const meta = byline(article);
+const html = await renderBody(article.body);
+
+/* Cover: 3:1, as uploaded in the Studio. Never larger than the source. */
+const heroW = cover?.url ? Math.min(cover.width, 2064) : 0;
+const heroH = Math.round(heroW / 3);
+const heroWidths = [1032, 2064].filter((w) => w <= heroW);
+
+/* Social card: 1200x630 JPEG, built from the cover and hosted here. Skipped for
+   a cover too small to fill it, which falls back to the site-wide card. */
+const og = cover?.url && cover.width >= 1200 && cover.height >= 630
+  ? await getImage({ src: cover.url, width: 1200, height: 630, format: "jpg" })
+  : null;
+const ogImage = og ? new URL(og.src, Astro.site).href : undefined;
+
+const ORG_ID = `${Astro.site.href}#certonymity`;
+const extraSchema = [{
+  "@type": "Article",
+  "@id": `${url}#article`,
+  headline: article.title,
+  description: article.excerpt,
+  url,
+  mainEntityOfPage: url,
+  datePublished: article.published,
+  dateModified: article.modified,
+  ...(ogImage && { image: ogImage }),
+  author: { "@id": ORG_ID },
+  publisher: { "@id": ORG_ID },
+}];
+
+/* Each CTA field falls back on its own, so filling in only the heading in the
+   Studio overrides the heading and keeps the rest of the default card. */
+const CHROME =
+  "https://chromewebstore.google.com/detail/cemail-beta/nkjndjopnihapdifnakhijbhpmcjioeb";
+const heading = cta?.heading || "Try cDot free";
+const body = cta?.body || "Encrypted, authenticated email from your existing address.";
+const secondHref = cta?.secondButtonLabel && cta?.secondButtonHref
+  ? (cta.secondButtonHref.startsWith("/")
+      ? new URL(cta.secondButtonHref, "https://c.email").href
+      : cta.secondButtonHref)
+  : null;
+---
+<Layout
+  title={title}
+  description={article.excerpt}
+  ogType="article"
+  ogImage={ogImage}
+  ogImageAlt={cover?.alt || article.title}
+  extraSchema={extraSchema}
+>
+
+<div class="page-hero">
+  <div class="wrap">
+    <a class="back" href="/resources/">&larr; Resources</a>
+    {meta && <p class="eyebrow">{meta}</p>}
+    <h1>{article.title}</h1>
+    {article.excerpt && <p class="sub">{article.excerpt}</p>}
+  </div>
+</div>
+
+<div class="wrap article-cover">
+  {cover?.url && (
+    <Image
+      src={cover.url}
+      width={heroW}
+      height={heroH}
+      widths={heroWidths}
+      sizes="(max-width: 1080px) 100vw, 1032px"
+      format="webp"
+      alt={cover.alt ?? ""}
+      loading="eager"
+    />
+  )}
+</div>
+
+<section class="article">
+  <div class="wrap article-grid">
+
+    <div class="article-main">
+      <div class="prose" set:html={html} />
+
+      <div class="cta">
+        <p class="cta-title">{heading}</p>
+        <p class="cta-body">{body}</p>
+        <div class="cta-actions">
+          <StoreDropdown label="Get cDot" id="dl-article" extra={{ label: "Chrome extension", href: CHROME }} />
+          {secondHref && (
+            <a class="btn btn-ghost" href={secondHref} target="_blank" rel="noopener noreferrer">
+              {cta.secondButtonLabel}
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+
+    {related.length > 0 && (
+      <aside class="related" aria-labelledby="related-label">
+        <p class="eyebrow" id="related-label">Related</p>
+        <ul>
+          {related.map((r) => (
+            <li>
+              <a href={`/resources/${r.slug}/`}>
+                <span class="rel-title">{r.title}</span>
+                {r.readTime && <span class="rel-meta">{r.readTime}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )}
+
+  </div>
+</section>
+
+</Layout>
+
+<style>
+  .back{
+    display:inline-block;margin-bottom:22px;
+    color:var(--ink-dim);font-size:14.5px;text-decoration:none;transition:color .2s;
+  }
+  .back:hover{color:var(--ink)}
+  .back:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:4px}
+  .page-hero .eyebrow{margin-bottom:16px}
+
+  /* Pulled up over the hero's bottom padding, so the image straddles the edge of
+     the wash instead of floating below it. */
+  .article-cover{position:relative;z-index:3;margin-top:-40px}
+  .article-cover :global(img){
+    display:block;width:100%;height:auto;aspect-ratio:3 / 1;object-fit:cover;
+    border:1px solid var(--line);border-radius:16px;background:var(--bg-2);
+  }
+  @media(max-width:640px){
+    .article-cover{margin-top:-28px}
+    .article-cover :global(img){aspect-ratio:2 / 1}
+  }
+
+  .article{padding-top:56px}
+  @media(max-width:640px){.article{padding-top:36px}}
+  .article-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:48px}
+  @media(min-width:981px){
+    .article-grid{grid-template-columns:minmax(0,1fr) 250px;gap:72px}
+    .related{position:sticky;top:112px;align-self:start}
+  }
+  .article-main{min-width:0;max-width:720px}
+
+  .cta{
+    margin-top:56px;padding:30px 28px;
+    border:1px solid var(--line);border-radius:16px;
+    background:linear-gradient(160deg,var(--card),transparent 60%);
+  }
+  .cta-title{
+    font-family:"Host Grotesk Variable","Host Grotesk","Geist Variable","Geist",sans-serif;
+    font-size:clamp(22px,4.4vw,26px);font-weight:500;line-height:1.2;color:var(--ink);
+  }
+  .cta-body{margin-top:8px;color:var(--ink-dim);font-size:15.5px}
+  .cta-actions{margin-top:24px;display:flex;gap:14px;flex-wrap:wrap}
+  @media(max-width:640px){
+    .cta{padding:24px 20px}
+    .cta-actions{flex-direction:column;align-items:stretch}
+    .cta-actions :global(.btn){text-align:center}
+  }
+
+  .related ul{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .related a{
+    display:block;padding:14px 16px;border-radius:12px;
+    border:1px solid var(--line);background:linear-gradient(160deg,var(--card),transparent 60%);
+    color:inherit;text-decoration:none;transition:border-color .2s;
+  }
+  .related a:hover{border-color:rgba(var(--accent-rgb),.4)}
+  .related a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+  .rel-title{
+    display:block;font-size:15.5px;line-height:1.3;transition:color .2s;
+  }
+  .related a:hover .rel-title{color:var(--cyan)}
+  .rel-meta{display:block;margin-top:4px;font-size:13px;color:var(--ink-faint)}
+</style>

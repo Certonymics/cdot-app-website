@@ -47,6 +47,16 @@ filter by Pages, not Workers - Pages projects do not appear under Workers). It
 builds the `main` branch and also gives every other branch its own preview URL,
 which is the cheap way to check a change before merging.
 
+**Resources are read from Sanity at build time.** The articles live in the
+c.Email Sanity project (`3blzrr9d`, dataset `production`, public-read - no token
+needed) and are authored in that project's Studio, which stays in
+`c.email-website/studio`. Publishing an article does not change this repo, so the
+site only picks it up on the next build: wire a Sanity webhook to a Cloudflare
+Pages deploy hook (Pages project -> Settings -> Builds -> Deploy hooks). A build
+that cannot reach Sanity, or that gets zero articles, **fails on purpose** rather
+than deploy an empty Resources section and silently drop its URLs from the
+sitemap; set `ALLOW_EMPTY_CMS=1` to override. See `src/lib/sanity.js`.
+
 Predecessor note: this repo previously held a hand-written `index.html` at the
 root with no build step. If a deploy starts 404ing after a change, check the
 host's build configuration before the code.
@@ -145,13 +155,20 @@ drawn outside the viewport is invisible.
 
 ## Contact form
 
-The form POSTs to a Google Apps Script web app whose source is versioned at
-`scripts/contact-form.gs`; that file's header comment carries the full setup and
-redeploy procedure. It is a **separate deployment from c.Email's** identical-looking
-form, with its own script and spreadsheet, so editing one cannot break the other.
+There are two forms, on two Google Apps Script web apps, both sharing one
+handler (`src/components/ContactFormScript.astro`).
 
-The `/exec` URL in `index.astro` is public by design - the script only appends
-rows and has no `doGet`, so holding the URL grants no read access.
+- **Homepage form** (`index.astro`): email + message, posts to **cDot's own
+  script** (`scripts/contact-form.gs`, with its own spreadsheet).
+- **`/contact`** (`contact.astro`): adds the "What is your enquiry about?"
+  selector and posts to **c.Email's script**
+  (`c.email-website/scripts/contact-form.gs`), which routes by type to
+  support@, press@ or info@. cDot inherited that form from c.Email, so these
+  enquiries land in **c.Email's sheet**, not cDot's. The type values in
+  `contact.astro` must match that script's `ROUTING` keys or it rejects them.
+
+Each `/exec` URL is public by design - the scripts only append rows and have no
+`doGet`, so holding the URL grants no read access.
 
 Two things that bite: any edit to the `.gs` needs *Deploy > Manage deployments >
 new version* or the live endpoint keeps running the old code; and the mail scope
@@ -181,6 +198,8 @@ The site is self-hosted apart from one first-party API call:
 | Reference | What it is | Fetched at runtime? |
 |---|---|---|
 | `map.c-layer.certonym.org` | Live C-Layer node data for the network map (own infrastructure) | Yes — degrades to static copy on failure |
+| `3blzrr9d.api.sanity.io` | Resources articles (c.Email Sanity project) | **Build time only** — never from a visitor's browser |
+| `cdn.sanity.io` | Resources article images | **Build time only** — downloaded and re-served from `/_astro/` |
 | `cdot.app` | Own canonical / `og:url` | No |
 | `www.w3.org`, `schema.org` | XML namespace + JSON-LD `@context` identifiers | No — never requested |
 
