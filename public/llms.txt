@@ -65,6 +65,12 @@ permissions, cDot exists to close the gap.
 - [For developers](https://cdot.app/product/developers/): cut onboarding times and KYC costs
   with reusable, cross-platform identity verification. Integrate in five minutes and receive
   proofs instead of storing user data. Includes an FAQ.
+- [How it works](https://cdot.app/how-it-works/): the steps behind cDot - linking an existing
+  email address, one-time identity verification, key management on the C-layer, the three email
+  security levels, hybrid post-quantum encryption, and c.ID.
+- [Privacy & security](https://cdot.app/security/): the privacy and security architecture -
+  end-to-end encryption (HPKE with X-Wing: X25519 + ML-KEM-768), on-device biometrics, invisible
+  2FA, key management, zero-knowledge proofs, the CASA independent assessment, and data storage.
 - [Resources](https://cdot.app/resources/): articles from the team on privacy, email security
   and why cDot exists. Each article is its own page under https://cdot.app/resources/.
 - [FAQ](https://cdot.app/faq/)

@@ -1,0 +1,144 @@
+---
+/* Ported from c.email-website (Security.jsx), with "c.Email" now "cDot".
+ *
+ * One change beyond the rename: the original's "Open-source code" section
+ * linked "here" twice, to the codebase and the documentation, but both links
+ * were placeholders (href="#"). They are left out rather than shipped dead.
+ */
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import StoreDropdown from "../components/StoreDropdown.astro";
+import shield from "../assets/security/esof-shield.png";
+
+const title = "Privacy & security — cDot";
+const description =
+  "How cDot keeps your emails safe and private: end-to-end encryption, post-quantum security, verified sending, and more.";
+
+const CHROME =
+  "https://chromewebstore.google.com/detail/cemail-beta/nkjndjopnihapdifnakhijbhpmcjioeb";
+
+/* Feather icon bodies; the <svg> wrapper is in the markup. */
+const ICONS = {
+  lock: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  phone: '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  key: '<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>',
+  eye: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>',
+  check: '<polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>',
+  code: '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+  database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
+};
+
+const SECTIONS = [
+  {
+    icon: "lock",
+    heading: "End-to-end encryption",
+    html: `<p>cDot keeps your emails private using end-to-end encryption (E2EE). This is a method of encryption that ensures only the sender and receiver of a message can read it by only encrypting the message on the sender&rsquo;s device, and decrypting on the receiver&rsquo;s, rather than on servers.</p>
+      <p>cDot encrypts your messages using HPKE (RFC 9180) with X-Wing, which combines the long-established X25519 algorithm with ML-KEM-768 &mdash; the post-quantum standard published by NIST as FIPS 203. Using both together means your email stays protected even if either algorithm is later broken.</p>`,
+  },
+  {
+    icon: "phone",
+    heading: "On-device biometric authentication",
+    html: `<p>For maximum security, cDot gives users the option to lock emails with our &lsquo;For Your Eyes Only&rsquo; setting, which requires the recipient to pass a continuous biometric presence check to decrypt an email. User biometric data is stored on their device only when they verify their identity at onboarding.</p>`,
+  },
+  {
+    icon: "shield",
+    heading: "Invisible 2FA",
+    html: `<p>Because your private decryption key stays on your device, cDot effectively functions as a form of invisible two-factor authentication: even someone who has guessed your email password won&rsquo;t be able to read or send encrypted emails.</p>`,
+  },
+  {
+    icon: "key",
+    heading: "Key management",
+    html: `<p>Your public keys for encryption and verification are stored as part of your decentralised identity document (DID) on our blockchain, the C-layer. When you send or receive an email, cDot corresponds with the C-layer to retrieve the relevant public key to encrypt and/or authenticate it. These keys are indexed by an arbitrarily chosen random identifier. Your private decryption key is stored on your device and nowhere else.</p>`,
+  },
+  {
+    icon: "eye",
+    heading: "Zero-knowledge proofs",
+    html: `<p>Users who have verified their identity on cDot can get a free zero-knowledge proof of age, which allows them to pass age verification checks while staying anonymous.</p>`,
+  },
+  {
+    icon: "check",
+    heading: "Independent assessment",
+    html: `<p>cDot has completed a Cloud Application Security Assessment (CASA), the App Defense Alliance framework required by Google for apps that access Gmail data. It verifies that our app meets a recognised baseline of application-security controls &mdash; including secure data handling, encryption in transit, and the ability to delete user data on request. Independent penetration tests and cryptographic reviews are planned, with the results to be published.</p>`,
+  },
+  {
+    icon: "code",
+    heading: "Open-source code",
+    html: `<p>All our code is open-source and available to read.</p>`,
+  },
+  {
+    icon: "database",
+    heading: "Data storage",
+    html: `<p>cDot is designed to retain as little user data as possible, and only where strictly necessary. Sensitive data, such as your identity information and private decryption key, is only ever stored on your device. For more information, you can read our <a href="/faq/">FAQ</a> or <a href="/privacy-policy/">privacy policy</a>. Users can delete their data at any time by uninstalling the app or emailing <a href="mailto:delete-account@certonymity.com">delete-account@certonymity.com</a>.</p>`,
+  },
+];
+---
+<Layout title={title} description={description}>
+
+<div class="page-hero">
+  <div class="wrap">
+    <h1>Privacy and security on cDot</h1>
+    <p class="sub">cDot exists to help you protect your emails. Here&rsquo;s how our privacy and security architecture works.</p>
+    <Image
+      class="shield"
+      src={shield}
+      width={160}
+      densities={[1, 2]}
+      alt="ESOF Verified and Secured by ADA CASA Assessor"
+    />
+  </div>
+</div>
+
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-list">
+      {SECTIONS.map((s) => (
+        <div class="sec-row">
+          <div class="sec-head">
+            <span class="sec-ic">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" set:html={ICONS[s.icon]} />
+            </span>
+            <h2>{s.heading}</h2>
+          </div>
+          <div class="prose" set:html={s.html} />
+        </div>
+      ))}
+    </div>
+
+    <div class="sec-cta">
+      <StoreDropdown label="Get cDot" id="dl-sec" extra={{ label: "Chrome extension", href: CHROME }} />
+      <a class="btn btn-ghost" href="/product/c-email/#features">See features</a>
+    </div>
+  </div>
+</section>
+
+</Layout>
+
+<style>
+  .shield{display:block;margin-top:32px;width:160px;height:auto}
+  .sec{padding-top:32px}
+  .sec-list{max-width:900px;border-top:1px solid var(--line)}
+  .sec-row{
+    display:grid;grid-template-columns:300px minmax(0,1fr);gap:40px;
+    padding:32px 0;border-bottom:1px solid var(--line);
+  }
+  .sec-head{display:flex;align-items:flex-start;gap:14px}
+  .sec-ic{
+    width:38px;height:38px;flex-shrink:0;display:grid;place-items:center;
+    border-radius:10px;background:rgba(var(--accent-rgb),.1);
+  }
+  .sec-ic svg{width:18px;height:18px;fill:none;stroke:var(--cyan);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .sec-head h2{font-size:clamp(20px,3.6vw,23px);line-height:1.25;padding-top:5px}
+  .sec-row .prose{font-size:16px;line-height:1.7}
+  .sec-row .prose :global(p:last-child){margin-bottom:0}
+  .sec-cta{margin-top:48px;display:flex;gap:14px;flex-wrap:wrap}
+
+  @media(max-width:860px){
+    .sec-row{grid-template-columns:minmax(0,1fr);gap:14px;padding:26px 0}
+  }
+  @media(max-width:640px){
+    .shield{width:132px;margin-top:26px}
+    .sec-cta{flex-direction:column;align-items:stretch}
+    .sec-cta :global(.btn){text-align:center}
+  }
+</style>

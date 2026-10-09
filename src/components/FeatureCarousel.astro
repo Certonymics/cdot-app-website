@@ -1,0 +1,217 @@
+---
+/* Feature carousel for the Email page. Ported from c.email-website's Features
+ * page, which stacks one phone mockup per feature down the page (and on mobile
+ * swaps them for a scroll-snap strip). Here they are a carousel instead: one
+ * feature at a time, image beside its text on a wide screen and above it on a
+ * narrow one, with arrows, dots, the arrow keys and swipe to move between them.
+ * The "anonymous proof of age" item is not carried over.
+ *
+ * Without JavaScript every slide simply shows, stacked, and the controls stay
+ * hidden: the content is never behind a click. The script adds `is-js`, which
+ * turns the stack into overlapping slides of which one is visible.
+ *
+ * The mockups were SVGs of about 1 MB each (a phone screenshot embedded as
+ * base64). They are rasterised to WebP in src/assets/features/ - roughly a tenth
+ * of the size - and go through Astro's image pipeline like any other image.
+ */
+import { Image } from "astro:assets";
+import encryption from "../assets/features/1h.webp";
+import verified from "../assets/features/2b.webp";
+import eyesOnly from "../assets/features/3c.webp";
+import anyEmail from "../assets/features/4.webp";
+import anywhere from "../assets/features/6b.webp";
+
+const ITEMS = [
+  {
+    img: encryption,
+    label: "End-to-end encryption",
+    body: "c.Email uses a hybrid protocol with post-quantum security. Emails are all encrypted and decrypted on your device — we never see them, and neither does anyone else not using your device.",
+  },
+  {
+    img: verified,
+    label: "Verified sending",
+    body: "Encrypted emails show the sender’s verified real name, so you can instantly spot scams, fraudulent emails, and impersonation attempts.",
+  },
+  {
+    img: eyesOnly,
+    label: "For Your Eyes Only",
+    body: "Maximum-security emails that are only decrypted when the intended recipient is looking at the screen.",
+  },
+  {
+    img: anyEmail,
+    label: "Works with any email",
+    body: "c.Email works with your existing email provider, including Gmail or Outlook, so you can get started in minutes with your current address.",
+  },
+  {
+    img: anywhere,
+    label: "Email privacy wherever you are",
+    body: "Download the app and sync with our Chrome extension to get secure email on any device.",
+  },
+];
+
+/* Displayed height is fixed in CSS (the phones are all the same height), so the
+   width to request follows from each image's own ratio. 2x for sharp screens. */
+const SHOW_H = 420;
+const widthFor = (img) => Math.round((SHOW_H * img.width) / img.height);
+---
+<div class="fc" data-fc role="region" aria-roledescription="carousel" aria-label="c.Email features">
+  <div class="fc-slides" aria-live="polite">
+    {ITEMS.map((it, i) => (
+      <div class="fc-slide" role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${ITEMS.length}`}>
+        <div class="fc-stage">
+          <Image
+            src={it.img}
+            width={widthFor(it.img)}
+            densities={[1, 2]}
+            format="webp"
+            quality={85}
+            alt=""
+            loading="lazy"
+            class="fc-img"
+          />
+        </div>
+        <div class="fc-copy">
+          <h3>{it.label}</h3>
+          <p>{it.body}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="fc-controls">
+    <button class="fc-btn" type="button" data-prev aria-label="Previous feature">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" /></svg>
+    </button>
+    <div class="fc-dots">
+      {ITEMS.map((it, i) => (
+        <button
+          class="fc-dot"
+          type="button"
+          aria-label={`Show feature ${i + 1}: ${it.label}`}
+          aria-current={i === 0 ? "true" : "false"}
+        ></button>
+      ))}
+    </div>
+    <button class="fc-btn" type="button" data-next aria-label="Next feature">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" /></svg>
+    </button>
+  </div>
+</div>
+
+<style>
+  .fc{
+    margin-top:48px;
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px;
+  }
+  .fc-slides{grid-column:1 / -1;display:flex;flex-direction:column;gap:64px}
+  .fc-slide{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px;align-items:center}
+
+  /* The same panel as the Why and How stages above it. */
+  .fc-stage{
+    display:grid;place-items:center;padding:32px;
+    border:1px solid #D6EBFF;border-radius:16px;background:#FAFCFF;
+  }
+  .fc-stage :global(.fc-img){
+    display:block;height:420px;width:auto;max-width:100%;object-fit:contain;
+    filter:drop-shadow(0 18px 28px rgba(var(--shadow-rgb),.16));
+  }
+  :global(:root[data-theme="dark"]) .fc-stage{background:#141820;border-color:rgba(234,243,255,.14)}
+
+  .fc-copy h3{
+    font-family:"Host Grotesk Variable","Host Grotesk","Geist Variable","Geist",sans-serif;
+    font-size:clamp(24px,3.6vw,32px);font-weight:500;line-height:1.15;letter-spacing:-.005em;
+    margin-bottom:14px;
+  }
+  .fc-copy p{color:var(--ink-dim);font-size:17px;line-height:1.65;max-width:34rem}
+
+  /* Controls: hidden until the script has run, since without it there is
+     nothing for them to do. */
+  .fc-controls{display:none;grid-column:2;align-items:center;gap:14px;margin-top:28px}
+  .fc-btn{
+    width:44px;height:44px;flex-shrink:0;display:grid;place-items:center;padding:0;
+    border:1px solid var(--line);border-radius:50%;background:none;color:var(--ink);
+    cursor:pointer;transition:border-color .2s,background-color .2s;
+  }
+  .fc-btn:hover{border-color:rgba(var(--accent-rgb),.5);background:rgba(var(--accent-rgb),.06)}
+  .fc-btn:focus-visible,.fc-dot:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+  .fc-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .fc-dots{display:flex;align-items:center}
+  /* 24px target (WCAG 2.2) around an 8px dot; the active one stretches to a pill. */
+  .fc-dot{width:24px;height:24px;position:relative;border:0;background:none;padding:0;cursor:pointer}
+  .fc-dot::before{
+    content:"";position:absolute;top:50%;left:50%;width:8px;height:8px;border-radius:999px;
+    transform:translate(-50%,-50%);background:rgba(var(--accent-rgb),.3);
+    transition:width .25s,background-color .25s;
+  }
+  .fc-dot[aria-current="true"]::before{width:22px;background:var(--brand)}
+
+  /* Script on: one slide at a time, all in the same grid cell so the area keeps
+     the height of the tallest and nothing jumps when they change. */
+  .fc.is-js .fc-controls{display:flex}
+  .fc.is-js .fc-slides{display:grid;gap:0}
+  .fc.is-js .fc-slide{
+    grid-area:1 / 1;opacity:0;visibility:hidden;
+    transition:opacity .3s ease,visibility 0s linear .3s;
+  }
+  .fc.is-js .fc-slide.is-on{opacity:1;visibility:visible;transition-delay:0s}
+
+  @media(max-width:860px){
+    .fc{margin-top:36px;grid-template-columns:minmax(0,1fr)}
+    .fc-slides{gap:48px}
+    .fc-slide{grid-template-columns:minmax(0,1fr);row-gap:26px}
+    .fc-stage{padding:24px}
+    .fc-stage :global(.fc-img){height:340px}
+    .fc-controls{grid-column:1;justify-content:center}
+    .fc-copy p{font-size:15.5px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .fc.is-js .fc-slide,.fc-dot::before{transition:none}
+  }
+</style>
+
+<script is:inline>
+(function(){
+  document.querySelectorAll('[data-fc]').forEach(function(root){
+    var slides = Array.prototype.slice.call(root.querySelectorAll('.fc-slide'));
+    var dots = Array.prototype.slice.call(root.querySelectorAll('.fc-dot'));
+    var at = 0;
+
+    function show(n){
+      at = (n + slides.length) % slides.length;
+      slides.forEach(function(s, i){
+        var on = i === at;
+        s.classList.toggle('is-on', on);
+        s.setAttribute('aria-hidden', on ? 'false' : 'true');
+        /* inert keeps links and focus out of the slides that are not showing. */
+        s.inert = !on;
+      });
+      dots.forEach(function(d, i){ d.setAttribute('aria-current', i === at ? 'true' : 'false'); });
+    }
+
+    root.classList.add('is-js');
+    show(0);
+
+    root.querySelector('[data-prev]').addEventListener('click', function(){ show(at - 1); });
+    root.querySelector('[data-next]').addEventListener('click', function(){ show(at + 1); });
+    dots.forEach(function(d, i){ d.addEventListener('click', function(){ show(i); }); });
+
+    root.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowLeft') { show(at - 1); e.preventDefault(); }
+      else if (e.key === 'ArrowRight') { show(at + 1); e.preventDefault(); }
+    });
+
+    /* Swipe. Counted only when it is clearly sideways, so scrolling the page
+       with a thumb over the carousel does not flip it. */
+    var x0 = 0, y0 = 0;
+    var area = root.querySelector('.fc-slides');
+    area.addEventListener('touchstart', function(e){
+      x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+    }, { passive: true });
+    area.addEventListener('touchend', function(e){
+      var dx = e.changedTouches[0].clientX - x0;
+      var dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) show(at + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+  });
+})();
+</script>

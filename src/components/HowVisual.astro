@@ -1,0 +1,221 @@
+---
+/* The small app screens that illustrate a step of "how it works": linking an
+ * email address, verifying an ID, the decentralised identity document, the
+ * three sending levels, a ciphertext sample and the proof-of-age result.
+ *
+ * Shared by the Email page's scroll-driven steps and the How it works page. The
+ * parent supplies the panel they sit in; this draws only what is inside it.
+ * Light in both themes, like the other app mockups, except where the dark rules
+ * below recolour them to sit on the grey dark-mode panel.
+ */
+interface Props {
+  v: "link" | "verify" | "did" | "send" | "cipher" | "age";
+}
+const { v } = Astro.props;
+
+/* A tick used on both verification rows. */
+const OK = '<circle cx="8" cy="8" r="7" fill="#566afd"/><path d="M4.5 8l2.5 2.5 4.5-4.5" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>';
+
+const DID_ROWS = [
+  ["Public encryption key", "enc:4f8a\u2026c9e7"],
+  ["Public verification key", "ver:b3d1\u2026a02f"],
+];
+
+/* The three sending levels, as the original lists them. */
+const LEVELS = [
+  ["notsecure", "NOT SECURE", "Not authenticated, encrypted, or recommended.", true],
+  ["secure", "SECURE", "Authenticated and end-to-end encrypted: even we can\u2019t read it.", false],
+  ["foryoureyesonly", "FOR YOUR EYES ONLY", "Authenticated, encrypted, and protected with our biometric decryption technology.", false],
+];
+
+/* Bootstrap Icons' fingerprint (BsFingerprint via react-icons), the same
+   mark c.email uses on the DID card. Five filled ridge paths. */
+const FINGERPRINT = [
+  "M8.06 6.5a.5.5 0 0 1 .5.5v.776a11.5 11.5 0 0 1-.552 3.519l-1.331 4.14a.5.5 0 0 1-.952-.305l1.33-4.141a10.5 10.5 0 0 0 .504-3.213V7a.5.5 0 0 1 .5-.5Z",
+  "M6.06 7a2 2 0 1 1 4 0 .5.5 0 1 1-1 0 1 1 0 1 0-2 0v.332q0 .613-.066 1.221A.5.5 0 0 1 6 8.447q.06-.555.06-1.115zm3.509 1a.5.5 0 0 1 .487.513 11.5 11.5 0 0 1-.587 3.339l-1.266 3.8a.5.5 0 0 1-.949-.317l1.267-3.8a10.5 10.5 0 0 0 .535-3.048A.5.5 0 0 1 9.569 8m-3.356 2.115a.5.5 0 0 1 .33.626L5.24 14.939a.5.5 0 1 1-.955-.296l1.303-4.199a.5.5 0 0 1 .625-.329",
+  "M4.759 5.833A3.501 3.501 0 0 1 11.559 7a.5.5 0 0 1-1 0 2.5 2.5 0 0 0-4.857-.833.5.5 0 1 1-.943-.334m.3 1.67a.5.5 0 0 1 .449.546 10.7 10.7 0 0 1-.4 2.031l-1.222 4.072a.5.5 0 1 1-.958-.287L4.15 9.793a9.7 9.7 0 0 0 .363-1.842.5.5 0 0 1 .546-.449Zm6 .647a.5.5 0 0 1 .5.5c0 1.28-.213 2.552-.632 3.762l-1.09 3.145a.5.5 0 0 1-.944-.327l1.089-3.145c.382-1.105.578-2.266.578-3.435a.5.5 0 0 1 .5-.5Z",
+  "M3.902 4.222a5 5 0 0 1 5.202-2.113.5.5 0 0 1-.208.979 4 4 0 0 0-4.163 1.69.5.5 0 0 1-.831-.556m6.72-.955a.5.5 0 0 1 .705-.052A4.99 4.99 0 0 1 13.059 7v1.5a.5.5 0 1 1-1 0V7a3.99 3.99 0 0 0-1.386-3.028.5.5 0 0 1-.051-.705M3.68 5.842a.5.5 0 0 1 .422.568q-.044.289-.044.59c0 .71-.1 1.417-.298 2.1l-1.14 3.923a.5.5 0 1 1-.96-.279L2.8 8.821A6.5 6.5 0 0 0 3.058 7q0-.375.054-.736a.5.5 0 0 1 .568-.422m8.882 3.66a.5.5 0 0 1 .456.54c-.084 1-.298 1.986-.64 2.934l-.744 2.068a.5.5 0 0 1-.941-.338l.745-2.07a10.5 10.5 0 0 0 .584-2.678.5.5 0 0 1 .54-.456",
+  "M4.81 1.37A6.5 6.5 0 0 1 14.56 7a.5.5 0 1 1-1 0 5.5 5.5 0 0 0-8.25-4.765.5.5 0 0 1-.5-.865m-.89 1.257a.5.5 0 0 1 .04.706A5.48 5.48 0 0 0 2.56 7a.5.5 0 0 1-1 0c0-1.664.626-3.184 1.655-4.333a.5.5 0 0 1 .706-.04ZM1.915 8.02a.5.5 0 0 1 .346.616l-.779 2.767a.5.5 0 1 1-.962-.27l.778-2.767a.5.5 0 0 1 .617-.346m12.15.481a.5.5 0 0 1 .49.51c-.03 1.499-.161 3.025-.727 4.533l-.07.187a.5.5 0 0 1-.936-.351l.07-.187c.506-1.35.634-2.74.663-4.202a.5.5 0 0 1 .51-.49",
+];
+
+const CIPHER = [
+  "enc://v1:9b72fa44c1ee58d0baf3",
+  "7f3a91bc204d8e15c6a0b94f2d",
+  "e81c07ab5936f4d2ac18be705a",
+  "4f8a2c9e7b1d::a91e6c3bf0",
+  "d52b8fe013ca7649bd2e8f01",
+];
+---
+{v === "link" && (
+                <div class="hv-tiles">
+                  <span><img src="/assets/gmail-logo.svg" alt="" width="34" height="34" /></span>
+                  <span><img src="/assets/outlook-logo.svg" alt="" width="34" height="34" /></span>
+                  <span>
+                    <svg viewBox="0 -960 960 960" width="34" height="34">
+                      <path d="M145.09-145.87q-32.51 0-55.87-23.35-23.35-23.36-23.35-55.87v-509.82q0-32.74 23.35-56.26 23.36-23.53 55.87-23.53h669.82q32.74 0 56.26 23.53 23.53 23.52 23.53 56.26v509.82q0 32.51-23.53 55.87-23.52 23.35-56.26 23.35H145.09ZM480-443.91l-334.91-223v441.82h669.82v-441.82L480-443.91Zm0-73 330.91-218H150.09l329.91 218Zm-334.91-150v-68 509.82-441.82Z"/>
+                    </svg>
+                  </span>
+                </div>
+              )}
+
+              {v === "verify" && (
+                <div class="hv-rows">
+                  <div class="hv-row">
+                    <span class="hv-ic">
+                      <svg viewBox="0 0 22 18" width="22" height="18">
+                        <rect x="1" y="1" width="20" height="16" rx="2" stroke-width="1.5"/>
+                        <circle cx="7.5" cy="9" r="2.5" stroke-width="1.3"/>
+                        <line x1="12" y1="5.5" x2="19" y2="5.5" stroke-width="1.3" stroke-linecap="round"/>
+                        <line x1="12" y1="9" x2="17" y2="9" stroke-width="1.3" stroke-linecap="round"/>
+                        <line x1="12" y1="12.5" x2="15" y2="12.5" stroke-width="1.3" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    <span class="hv-txt"><b>ID scan</b><i>NFC chip detected</i></span>
+                    <svg class="hv-ok" viewBox="0 0 16 16" width="14" height="14" set:html={OK} />
+                  </div>
+                  <div class="hv-row">
+                    <span class="hv-ic">
+                      <svg viewBox="0 0 22 22" width="22" height="22">
+                        <path d="M1 6V2h4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 2h4v4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M1 16v4h4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M16 20h4v-4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="8" cy="9.5" r="1" fill="#566afd" stroke="none"/>
+                        <circle cx="14" cy="9.5" r="1" fill="#566afd" stroke="none"/>
+                        <path d="M8 13.5Q11 15.5 14 13.5" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                    </span>
+                    <span class="hv-txt"><b>Liveness check</b><i>Face verified</i></span>
+                    <svg class="hv-ok" viewBox="0 0 16 16" width="14" height="14" set:html={OK} />
+                  </div>
+                </div>
+              )}
+
+              {v === "did" && (
+                <article class="hv-did">
+                  <div class="hv-did-head">
+                    {/* Bootstrap's fingerprint, via react-icons, as on
+                        c.email. Five filled ridges - drawing it as a single
+                        stroked outline, as this did, just looks broken. */}
+                    <svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor">
+                      {FINGERPRINT.map((d) => <path d={d} />)}
+                    </svg>
+                    <b>Your DID</b>
+                  </div>
+                  {DID_ROWS.map(([k, v]) => (
+                    <div class="hv-did-row"><span>{k}</span><b>{v}</b></div>
+                  ))}
+                </article>
+              )}
+
+              {v === "send" && (
+                <div class="hv-levels">
+                  {LEVELS.map(([icon, label, note, warn]) => (
+                    <div class:list={["hv-level", { warn }]}>
+                      <img src={`/assets/${icon}.svg`} alt="" width="18" height="18" />
+                      <span><b>{label}</b><i>{note}</i></span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+{v === "cipher" && (
+  <article class="hv-did hv-cipher">
+    {CIPHER.map((l) => <p>{l}</p>)}
+  </article>
+)}
+
+{v === "age" && (
+  <div class="hv-row hv-age">
+    <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+    </svg>
+    <span class="hv-txt"><b>Your c.ID allowed you to prove you are 18 or older.</b></span>
+  </div>
+)}
+
+<style>
+  /* The four screens. Light in both themes, like every other app mockup. */
+  .hv-tiles{display:flex;align-items:center;justify-content:center;gap:14px}
+  .hv-tiles span{width:56px;height:56px;border-radius:12px;display:flex;
+    align-items:center;justify-content:center;flex-shrink:0;
+    border:1px solid rgba(86,106,253,.2);background:rgba(235,245,255,.7)}
+  .hv-tiles svg{fill:#566afd}
+
+  .hv-rows{display:flex;flex-direction:column;gap:10px}
+  .hv-row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:12px;
+    border:1px solid rgba(86,106,253,.25);background:rgba(235,245,255,.55)}
+  .hv-ic{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:flex;
+    align-items:center;justify-content:center;background:rgba(86,106,253,.15)}
+  .hv-ic svg{fill:none;stroke:#566afd}
+  .hv-txt{flex:1;min-width:0;display:flex;flex-direction:column}
+  .hv-txt b{font-size:11px;font-weight:600;color:rgba(0,0,0,.8)}
+  .hv-txt i{font-style:normal;font-size:10px;color:rgba(0,0,0,.45)}
+  .hv-ok{flex-shrink:0}
+
+  .hv-did{border:1px solid rgba(86,106,253,.25);border-radius:12px;
+    background:rgba(235,245,255,.55);padding:14px}
+  .hv-did-head{display:flex;align-items:center;gap:8px;padding-bottom:11px;margin-bottom:11px;
+    border-bottom:1px solid rgba(86,106,253,.15);color:#566afd}
+  .hv-did-head b{font-size:12px;font-weight:600;color:rgba(0,0,0,.8)}
+  .hv-did-row{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    font-size:11px;margin-top:9px}
+  .hv-did-row:first-of-type{margin-top:0}
+  .hv-did-row span{flex-shrink:0;color:rgba(0,0,0,.5)}
+  .hv-did-row b{font-weight:500;color:rgba(0,0,0,.8);text-align:right}
+
+  .hv-levels{display:flex;flex-direction:column;gap:9px}
+  .hv-level{display:flex;align-items:flex-start;gap:11px;padding:12px;border-radius:12px;
+    border:1px solid #566afd;background:#eff3ff}
+  .hv-level.warn{border-color:#ff7300;background:#fff5eb}
+  .hv-level img{flex-shrink:0;margin-top:1px}
+  .hv-level span{min-width:0;display:flex;flex-direction:column;gap:2px}
+  .hv-level b{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:#566afd}
+  .hv-level i{font-style:normal;font-size:10px;line-height:1.35;color:rgba(86,106,253,.8)}
+  .hv-level.warn b{color:#ff7300}
+  .hv-level.warn i{color:rgba(255,115,0,.8)}
+
+  .hv-cipher{display:flex;flex-direction:column;gap:4px}
+  .hv-cipher p{font-family:var(--font-mono);font-size:10px;line-height:1.45;
+    color:rgba(0,0,0,.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hv-age{gap:12px;padding:16px}
+  .hv-age svg{flex-shrink:0;fill:none;stroke:#22c55e;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+  .hv-age .hv-txt b{font-size:12px;line-height:1.4}
+
+  :global(:root[data-theme="dark"]) .hv-tiles span{
+    border-color:rgba(var(--brand-rgb),.38);background:rgba(234,243,255,.06);
+  }
+  :global(:root[data-theme="dark"]) .hv-tiles svg{fill:var(--cyan)}
+
+  :global(:root[data-theme="dark"]) .hv-row{
+    border-color:rgba(var(--brand-rgb),.32);background:rgba(234,243,255,.05);
+  }
+  :global(:root[data-theme="dark"]) .hv-ic{background:rgba(var(--brand-rgb),.24)}
+  :global(:root[data-theme="dark"]) .hv-ic svg{stroke:var(--cyan)}
+  :global(:root[data-theme="dark"]) .hv-txt b{color:var(--ink)}
+  :global(:root[data-theme="dark"]) .hv-txt i{color:var(--ink-faint)}
+
+  :global(:root[data-theme="dark"]) .hv-did{
+    border-color:rgba(var(--brand-rgb),.32);background:rgba(234,243,255,.05);
+  }
+  :global(:root[data-theme="dark"]) .hv-did-head{
+    border-bottom-color:rgba(var(--brand-rgb),.22);color:var(--cyan);
+  }
+  :global(:root[data-theme="dark"]) .hv-did-head b,
+  :global(:root[data-theme="dark"]) .hv-did-row b{color:var(--ink)}
+  :global(:root[data-theme="dark"]) .hv-did-row span{color:var(--ink-faint)}
+
+  :global(:root[data-theme="dark"]) .hv-level{
+    border-color:rgba(var(--brand-rgb),.55);background:rgba(var(--brand-rgb),.12);
+  }
+  :global(:root[data-theme="dark"]) .hv-level b{color:var(--cyan)}
+  :global(:root[data-theme="dark"]) .hv-level i{color:rgba(234,243,255,.62)}
+  /* #ff7300 sits at about 3:1 on this panel - too dark for 10px body text, so
+     the warning state lifts to a lighter amber here. */
+  :global(:root[data-theme="dark"]) .hv-level.warn{
+    border-color:#ff9a3d;background:rgba(255,115,0,.13);
+  }
+  :global(:root[data-theme="dark"]) .hv-level.warn b{color:#ff9a3d}
+  :global(:root[data-theme="dark"]) .hv-level.warn i{color:rgba(255,154,61,.82)}
+  :global(:root[data-theme="dark"]) .hv-cipher p{color:var(--ink-faint)}
+</style>

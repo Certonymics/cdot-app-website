@@ -1,0 +1,138 @@
+---
+/* Ported from c.email-website (HowItWorks.jsx), with "c.Email" now "cDot" and
+ * "AgePass" now "c.ID", which is what the Identity page here calls it.
+ *
+ * The screens come from the shared HowVisual component, the same ones the Email
+ * page's scroll-driven steps use. Here each step is a plain row instead: text on
+ * one side, its screen in a panel on the other, stacking on a narrow screen.
+ */
+import Layout from "../layouts/Layout.astro";
+import HowVisual from "../components/HowVisual.astro";
+import StoreDropdown from "../components/StoreDropdown.astro";
+
+const title = "How it works — cDot";
+const description = "See how cDot protects your emails with end-to-end encryption and verified sending.";
+
+const CHROME =
+  "https://chromewebstore.google.com/detail/cemail-beta/nkjndjopnihapdifnakhijbhpmcjioeb";
+
+const STEPS = [
+  {
+    title: "Getting started",
+    v: "link",
+    html: `<p>cDot is designed to work with your existing email account, rather than making you create a new one. Download our app or install our browser extension, then choose any email address (Gmail, Outlook, or other) to connect.</p>`,
+  },
+  {
+    title: "Verification",
+    v: "verify",
+    html: `<p>Complete our quick identity verification process by scanning an existing document (passport or ID card) and passing a liveness check. You can do this when signing up or later on.</p>
+      <p>This step is necessary to support:</p>
+      <ul>
+        <li>Email authentication and verified sending.</li>
+        <li>Email encryption (because we don&rsquo;t support encrypted but unverified emails).</li>
+        <li>Anonymous age verification elsewhere (for more, see <a href="/product/c-id/">c.ID</a>).</li>
+      </ul>`,
+  },
+  {
+    title: "Key management",
+    v: "did",
+    html: `<p>cDot verifies your identity using the machine-readable data on your ID. We then create your public keys for encryption and verification and store them on our public blockchain, the C-layer. These keys make up your decentralised identity document (DID). Your private decryption key is only stored on your device.</p>
+      <p><a href="https://agepass.xyz/" target="_blank" rel="noopener noreferrer">See what your DID looks like.</a></p>`,
+  },
+  {
+    title: "Email types",
+    v: "send",
+    html: `<p>After verification, you can send and receive secure emails, choosing between three different security levels for a given email. Each security level looks different in the app.</p>
+      <ul>
+        <li><strong>Orange emails:</strong> Not Secure &mdash; no encryption or authentication.</li>
+        <li><strong>Blue emails:</strong> Secure &mdash; protected with end-to-end encryption and authentication.</li>
+        <li><strong>Blue emails that only decrypt when you look at the screen:</strong> For Your Eyes Only &mdash; protected even if someone accesses your device.</li>
+      </ul>`,
+  },
+  {
+    title: "Encryption",
+    v: "cipher",
+    html: `<p>cDot keeps your emails private using end-to-end encryption (E2EE). Specifically, we use hybrid public-key encryption (HPKE), which pairs classical and post-quantum cryptography to ensure your emails stay private even if either system is broken at some point in the future. cDot uses ML-KEM, the post-quantum standard published by NIST (the National Institute of Standards and Technology).</p>
+      <p>We encrypt your emails&rsquo; body and attachments, but not their recipient addresses or subject lines. This is to ensure you can search your entire email archive, rather than only emails stored locally.</p>
+      <p>You can also send an encrypted email to someone who is not yet on cDot. This is made possible through identity-based encryption (IBE): the sender encrypts the message to the recipient&rsquo;s email address, so no previously published recipient public key is required. The recipient receives only an email with a link to install the app; the message itself remains encrypted.</p>`,
+  },
+  {
+    title: "c.ID",
+    v: "age",
+    html: `<p>Once you&rsquo;ve verified your identity, you can also prove your age with a cryptographic proof, instead of a full ID, on other platforms using <a href="/product/c-id/">c.ID</a>.</p>`,
+  },
+];
+---
+<Layout title={title} description={description}>
+
+<div class="page-hero">
+  <div class="wrap">
+    <h1>How cDot works</h1>
+    <p class="sub">Combining cryptography with verified identity to support safe, secure emails.</p>
+  </div>
+</div>
+
+<section class="hw">
+  <div class="wrap">
+    <ol class="hw-list">
+      {STEPS.map((st) => (
+        <li class="hw-step">
+          <div>
+            <h2 class="hw-title">{st.title}</h2>
+            <div class="prose" set:html={st.html} />
+          </div>
+          <div class="hw-panel" aria-hidden="true">
+            <div class="hw-card"><HowVisual v={st.v} /></div>
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <div class="hw-cta">
+      <StoreDropdown label="Get cDot" id="dl-how" extra={{ label: "Chrome extension", href: CHROME }} />
+      <a class="btn btn-ghost" href="/security/">Privacy &amp; security</a>
+    </div>
+  </div>
+</section>
+
+</Layout>
+
+<style>
+  .hw{padding-top:32px}
+  .hw-list{list-style:none}
+  .hw-step{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:56px;align-items:center;
+    padding:56px 0;border-bottom:1px solid var(--line);
+  }
+  .hw-step:first-child{padding-top:0}
+  .hw-step:last-child{border-bottom:0}
+
+  /* A label above the copy, not a display heading: an h2 for the page's
+     outline, set in the body face. */
+  .hw-title{
+    font-family:"Geist Variable","Geist",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:17px;font-weight:600;line-height:1.4;letter-spacing:0;
+    color:var(--cyan);margin-bottom:12px;
+  }
+  .hw-step .prose{max-width:34rem}
+  .hw-step .prose :global(p:last-child),.hw-step .prose :global(ul:last-child){margin-bottom:0}
+
+  /* The same panel as the Email page's step stage. */
+  .hw-panel{
+    display:grid;place-items:center;min-height:240px;padding:40px;
+    border:1px solid #D6EBFF;border-radius:16px;background:#FAFCFF;
+  }
+  :global(:root[data-theme="dark"]) .hw-panel{background:#141820;border-color:rgba(234,243,255,.14)}
+  .hw-card{width:100%;max-width:262px}
+
+  .hw-cta{margin-top:56px;padding-top:40px;border-top:1px solid var(--line);display:flex;gap:14px;flex-wrap:wrap}
+
+  @media(max-width:860px){
+    .hw-step{grid-template-columns:minmax(0,1fr);gap:28px;padding:44px 0}
+    .hw-panel{padding:28px;min-height:200px}
+  }
+  @media(max-width:640px){
+    .hw-cta{flex-direction:column;align-items:stretch}
+    .hw-cta :global(.btn){text-align:center}
+  }
+</style>

@@ -5,10 +5,8 @@
  * (src/lib/sanity.js), so this page is plain static HTML - the original's
  * loading state, client-side fetch and embedded-data handoff are not needed.
  *
- * Rebuilt on this site's tokens: the featured article is a full-width card with
- * a 3:1 image instead of a 620px-tall fixed-height tile, and the cards size to
- * their content instead of to a fixed 300px, so a long title or excerpt cannot
- * be clipped.
+ * Rebuilt on this site's tokens, with c.Email's card sizes and spacing kept
+ * (see PostCard).
  */
 import Layout from "../../layouts/Layout.astro";
 import PostCard from "../../components/PostCard.astro";
@@ -46,12 +44,13 @@ const rest = articles.filter((a) => a !== featured);
 </Layout>
 
 <style>
-  .resources{padding-top:56px}
-  .post-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+  /* One column on a phone, two from 641px, three from 1024px - and the featured
+     card spans two columns and two rows (see PostCard). Gap and section spacing
+     as on c.Email's Resources page. */
+  .resources{padding:48px 0}
+  .post-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
   .empty{color:var(--ink-dim)}
-  @media(max-width:860px){.post-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:640px){
-    .resources{padding-top:36px}
-    .post-grid{grid-template-columns:minmax(0,1fr)}
-  }
+  @media(min-width:641px){.post-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(min-width:768px){.resources{padding:64px 0}}
+  @media(min-width:1024px){.post-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
