@@ -9,10 +9,11 @@ interface Props {
   description: string;
   heading: string;
   updated?: string;
+  pageType?: "WebPage" | "ContactPage";
 }
-const { title, description, heading, updated } = Astro.props;
+const { title, description, heading, updated, pageType } = Astro.props;
 ---
-<Layout title={title} description={description}>
+<Layout title={title} description={description} pageType={pageType}>
   <div class="page-hero page-hero--compact">
     <div class="wrap">
       <h1>{heading}</h1>

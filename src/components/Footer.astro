@@ -3,17 +3,18 @@
    right, the copyright underneath. The regulatory note stays, as the quietest
    band at the very bottom. */
 const year = new Date().getFullYear();
+const path = Astro.url.pathname;
 
 const PRESS_KIT =
-  "https://drive.google.com/drive/folders/1UYjTCbeFVcCuDT5c1Arh30lFyIRep-kJ?usp=sharing";
+  "https://drive.google.com/drive/folders/1OSPZVD3mimEL1NABBoptLuMaIQxL1dOj?usp=drive_link";
 
 const links = [
-  { label: "About", href: "/about" },
+  { label: "About", href: "/about/" },
   { label: "Press kit", href: PRESS_KIT, external: true },
-  { label: "Contact", href: "/contact" },
-  { label: "Support", href: "/support" },
-  { label: "Terms", href: "/terms" },
-  { label: "Privacy", href: "/privacy-policy" },
+  { label: "Contact", href: "/contact/" },
+  { label: "Support", href: "/support/" },
+  { label: "Terms", href: "/terms/" },
+  { label: "Privacy", href: "/privacy-policy/" },
 ];
 ---
 <footer>
@@ -25,6 +26,7 @@ const links = [
           <a
             class="foot-link"
             href={l.href}
+            aria-current={path === l.href ? "page" : undefined}
             {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
           >{l.label}</a>
         ))}

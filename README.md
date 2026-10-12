@@ -1,8 +1,10 @@
 # cdot.app
 
 Built with [Astro](https://astro.build). Ships **zero client-side framework
-code**: the only JavaScript on the page is the contact-form handler and the
-C-Layer network map.
+code**. The JavaScript that is there is small, hand-written and inline in each
+page: the header menus and store dropdowns, the Email page's feature carousel and
+scroll-driven steps, the contact and node-signup forms, and the C-Layer network
+map.
 
 ## Running it
 
@@ -16,6 +18,7 @@ npm run dev      # http://localhost:4321
 | `npm run dev` | Dev server with hot reload |
 | `npm run build` | Static build into `dist/` |
 | `npm run preview` | Serve the built `dist/` |
+| `npm run check` | Type-check every `.astro` and `.js` file (`astro check`, strict) |
 
 `dist/` is plain static HTML/CSS/JS — deployable to any static host.
 
@@ -57,6 +60,27 @@ that cannot reach Sanity, or that gets zero articles, **fails on purpose** rathe
 than deploy an empty Resources section and silently drop its URLs from the
 sitemap; set `ALLOW_EMPTY_CMS=1` to override. See `src/lib/sanity.js`.
 
+**Headers and the Content-Security-Policy.** `public/_headers` sets the response
+headers Cloudflare Pages applies: `nosniff`, a referrer policy, a permissions
+policy, `frame-ancestors 'none'`, HSTS, and long-lived caching for the hashed
+`/_astro/*` files. The policy that restricts scripts and requests is written
+into each page by `scripts/csp.mjs`, which `npm run build` runs after
+`astro build` (so the Cloudflare build command stays `npm run build`). It hashes
+every inline script and style on the page, so a script injected into a page does
+not run. Three things to know:
+
+- Astro's own `security.csp` is **not** used: it hashes only the scripts Astro
+  processes, not `is:inline` ones, so it would have blocked every script here.
+- Adding a third-party host (an analytics script, an embed, a new API) means
+  adding it to `STATIC_DIRECTIVES` in `scripts/csp.mjs`, or the browser refuses
+  it. The build fails if a page loads something from another origin or contains
+  an inline `style=""` or event handler, so this cannot slip through unnoticed.
+- The hashes match exact text, so keep Cloudflare's **Rocket Loader** (and the
+  old Auto Minify) switched off for this site; either rewrites inline scripts
+  after the build and makes them stop running. Cloudflare's Email Address
+  Obfuscation and Web Analytics beacon are fine to leave off too; the beacon's
+  script would be blocked.
+
 Predecessor note: this repo previously held a hand-written `index.html` at the
 root with no build step. If a deploy starts 404ing after a change, check the
 host's build configuration before the code.
@@ -76,7 +100,6 @@ src/
     global.css                everything else
 public/
   assets/                     logos, favicon, earth-texture.jpg (map)
-  llms.txt
 ```
 
 To add a page, drop a `.astro` file in `src/pages/` and wrap it in `Layout`.
@@ -155,17 +178,24 @@ drawn outside the viewport is invisible.
 
 ## Contact form
 
-There are two forms, on two Google Apps Script web apps, both sharing one
-handler (`src/components/ContactFormScript.astro`).
+The only form is on `/contact` (`contact.astro`), handled by
+`src/components/ContactFormScript.astro`. It has a "What is your enquiry about?"
+selector and posts to **c.Email's script**
+(`c.email-website/scripts/contact-form.gs`), which routes by type to support@,
+press@ or info@. cDot inherited that form from c.Email, so enquiries land in
+**c.Email's sheet**. The type values in `contact.astro` must match that script's
+`ROUTING` keys or it rejects them.
 
-- **Homepage form** (`index.astro`): email + message, posts to **cDot's own
-  script** (`scripts/contact-form.gs`, with its own spreadsheet).
-- **`/contact`** (`contact.astro`): adds the "What is your enquiry about?"
-  selector and posts to **c.Email's script**
-  (`c.email-website/scripts/contact-form.gs`), which routes by type to
-  support@, press@ or info@. cDot inherited that form from c.Email, so these
-  enquiries land in **c.Email's sheet**, not cDot's. The type values in
-  `contact.astro` must match that script's `ROUTING` keys or it rejects them.
+The script behind it lives in `c.email-website/scripts/contact-form.gs`, which
+is the canonical copy: edit it there, paste it into Google, then deploy a **new
+version** of the existing deployment (a "new deployment" changes the URL and
+breaks both sites). The same applies to the other three form scripts, which are
+kept in their own repos - cdot-world (cdot.world's contact form),
+certonym.org (its contact form) and c.email-website (`clayer-signup.gs`, the
+C-layer node signup that `/network` also posts to).
+
+The homepage used to have its own form; it was replaced by a call to action, and
+the cDot script it posted to now serves only cdot.world.
 
 Each `/exec` URL is public by design - the scripts only append rows and have no
 `doGet`, so holding the URL grants no read access.
@@ -178,7 +208,8 @@ notified.
 
 ## Crawler policy
 
-`public/robots.txt` deliberately splits two things people conflate: retrieval
+`src/pages/robots.txt.js` (a generated endpoint, so the `Sitemap:` line follows
+`site` in `astro.config.mjs`) deliberately splits two things people conflate: retrieval
 and training. Search/citation agents (`OAI-SearchBot`, `ChatGPT-User`,
 `Claude-SearchBot`, `Claude-User`, `PerplexityBot`) are **allowed**, so
 assistants can read the page and link back to it. Training crawlers and opt-out
@@ -190,6 +221,15 @@ Two things to keep straight if you edit it. `Google-Extended` and
 search ranking - Googlebot and Applebot are separate and still allowed. And
 robots.txt is a request, not enforcement: it states intent and well-behaved
 operators honour it, but nothing stops a scraper.
+
+## llms.txt
+
+`/llms.txt` is a plain-text summary of the site for language models, generated by
+`src/pages/llms.txt.js`. Its URLs follow `site`, the chains come from
+`src/lib/chains.js`, and the Resources articles are listed from Sanity on every
+build. What is still hand-written is the prose about the site itself (what cDot
+is, how it works, one line per page): update it when a page's purpose changes.
+It is an informal convention, not a standard that search engines rank on.
 
 ## External dependencies
 
@@ -222,13 +262,26 @@ display headings, and Geist Mono for figures and technical values.
 
 ## Structured data
 
-`Layout.astro` emits a JSON-LD `@graph` of five nodes: the `Organization`
-(Certonymity Ltd), a `SoftwareApplication` for cDot, and one `SoftwareApplication`
-per chain, linked to the parent by `isPartOf` / `hasPart`. Each chain carries its
-specifications as `PropertyValue` entries with a numeric `value` and a `unitText`,
-so throughput and finality figures are machine-comparable instead of buried in a
-prose `description`.
+JSON-LD is built in `src/lib/schema.js`. `Layout.astro` puts a small `@graph` on
+every page - the `Organization` (Certonymity Ltd, with support and press
+contacts), the `WebSite`, and for an indexable page the `WebPage` and its
+`BreadcrumbList` - and each page adds only what is true of it through the
+layout's `extraSchema` prop:
 
-**Three places state the same facts and drift silently:** the spec chips in
-`index.astro`, the `PropertyValue` entries in `Layout.astro`, and `public/llms.txt`.
-Change one, change all three.
+- **Homepage:** the cDot `SoftwareApplication`, with the store links as `installUrl`.
+- **`/network`:** the same, plus one `SoftwareApplication` per chain, linked by
+  `isPartOf` / `hasPart`. Each chain carries its specifications as
+  `PropertyValue` entries (numeric `value`, `unitText`), so throughput and
+  finality are machine-comparable instead of buried in prose.
+- **Email, Identity and developers pages:** a `FAQPage`, generated from the same
+  array the page renders, so the markup and the visible questions cannot disagree.
+- **Articles:** an `Article`, with Resources in the breadcrumb.
+- **404:** the organisation and website only; it is not a destination.
+
+**The chain figures are written once, in `src/lib/chains.js`.** The network
+page's cards, the `PropertyValue` entries here and `/llms.txt` all read it, so
+changing a figure there changes all three.
+
+There is no `sameAs` yet: it should list the organisation's real external
+profiles (LinkedIn, Companies House, GitHub) and none are published, so it is
+deliberately absent rather than guessed.

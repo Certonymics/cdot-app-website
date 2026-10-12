@@ -1,39 +1,46 @@
 ---
 const tagline = "Secure identity, communication and payments";
 
+/* Which link is the page you are on. "page" for the exact page, "true" for a
+   page inside it (an article under Resources), so the section stays marked.
+   Screen readers announce it, and the stylesheet draws it for everyone else. */
+const path = Astro.url.pathname;
+const current = (href: string) =>
+  path === href ? "page" : href !== "/" && path.startsWith(href) ? "true" : undefined;
+
 /* Top nav. An item with `children` renders as a dropdown, anything else as a
    plain link - so adding or removing a menu is a data change, not a markup one. */
 const navItems = [
   {
     label: "Product",
     children: [
-      { label: "Identity", href: "/product/c-id" },
-      { label: "Email", href: "/product/c-email" },
-      { label: "Chat", href: "/product/c-chat" },
-      { label: "Payments", href: "/product/c-pay" },
-      { label: "Vault", href: "/product/c-vault" },
-      { label: "For developers", href: "/product/developers" },
+      { label: "Identity", href: "/product/c-id/" },
+      { label: "Email", href: "/product/c-email/" },
+      { label: "Chat", href: "/product/c-chat/" },
+      { label: "Payments", href: "/product/c-pay/" },
+      { label: "Vault", href: "/product/c-vault/" },
+      { label: "For developers", href: "/product/developers/" },
     ],
   },
   {
     label: "Features",
     children: [
-      { label: "How it works", href: "/how-it-works" },
-      { label: "Privacy & security", href: "/security" },
+      { label: "How it works", href: "/how-it-works/" },
+      { label: "Privacy & security", href: "/security/" },
     ],
   },
-  { label: "Network", href: "/network" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Resources", href: "/resources" },
+  { label: "Network", href: "/network/" },
+  { label: "FAQ", href: "/faq/" },
+  { label: "Resources", href: "/resources/" },
 ];
 ---
 <header>
   <div class="wrap nav">
-    <a class="brand" href="/">
+    <a class="brand" href="/" aria-current={current("/") === "page" ? "page" : undefined}>
       <svg class="logomark" role="img" aria-label="cDot"><use href="#cdot-logo"/></svg>
       <span class="tag">{tagline}</span>
     </a>
-    <nav id="main-nav">
+    <nav id="main-nav" aria-label="Main">
       {navItems.map((item) =>
         item.children ? (
           <div class="has-menu">
@@ -44,6 +51,7 @@ const navItems = [
               type="button"
               aria-expanded="false"
               aria-controls={`menu-${item.label.toLowerCase()}`}
+              aria-current={item.children.some((c) => current(c.href)) ? "true" : undefined}
             >
               {item.label}
               <svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -56,13 +64,13 @@ const navItems = [
             <div class="menu" id={`menu-${item.label.toLowerCase()}`}>
               <div class="menu-panel">
                 {item.children.map((c) => (
-                  <a class="menu-item" href={c.href}>{c.label}</a>
+                  <a class="menu-item" href={c.href} aria-current={current(c.href)}>{c.label}</a>
                 ))}
               </div>
             </div>
           </div>
         ) : (
-          <a class="link" href={item.href}>{item.label}</a>
+          <a class="link" href={item.href} aria-current={current(item.href)}>{item.label}</a>
         )
       )}
     </nav>

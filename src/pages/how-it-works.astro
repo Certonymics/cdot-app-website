@@ -8,15 +8,16 @@
  */
 import Layout from "../layouts/Layout.astro";
 import HowVisual from "../components/HowVisual.astro";
+import type { ComponentProps } from "astro/types";
 import StoreDropdown from "../components/StoreDropdown.astro";
+import { CHROME_URL as CHROME } from "../lib/links.js";
 
 const title = "How it works — cDot";
 const description = "See how cDot protects your emails with end-to-end encryption and verified sending.";
 
-const CHROME =
-  "https://chromewebstore.google.com/detail/cemail-beta/nkjndjopnihapdifnakhijbhpmcjioeb";
 
-const STEPS = [
+type Visual = ComponentProps<typeof HowVisual>["v"];
+const STEPS: { title: string; v: Visual; html: string }[] = [
   {
     title: "Getting started",
     v: "link",

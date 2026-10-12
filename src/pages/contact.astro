@@ -6,8 +6,7 @@
  * required. The values below must match that script's ROUTING keys - it rejects
  * any other type. Enquiries land in c.Email's sheet.
  *
- * The homepage form is a different thing: it posts to cDot's own script and has
- * no type. The handler is shared (ContactFormScript). */
+ * The handler is ContactFormScript. */
 import LegalPage from "../layouts/LegalPage.astro";
 import ContactFormScript from "../components/ContactFormScript.astro";
 
@@ -26,11 +25,12 @@ const NO_MESSAGE_REQUIRED = "business";
 ---
 <LegalPage
   title="Contact — cDot"
-  description="Get in touch with the cDot team."
+  description="Contact the cDot team for support, press enquiries, business demos or anything else. Send a message or email us directly."
   heading="Contact us"
+  pageType="ContactPage"
 >
   <p>Send us a message using the form below. If you&rsquo;d prefer to email us directly, see the contact emails below.</p>
-  <p>You can view our <a href="https://drive.google.com/drive/folders/1UYjTCbeFVcCuDT5c1Arh30lFyIRep-kJ?usp=sharing" target="_blank" rel="noopener noreferrer">press kit here</a>.</p>
+  <p>You can view our <a href="https://drive.google.com/drive/folders/1OSPZVD3mimEL1NABBoptLuMaIQxL1dOj?usp=drive_link" target="_blank" rel="noopener noreferrer">press kit here</a>.</p>
   <p>For customer support, you can visit our <a href="https://support.certonymity.com/hc/c-email/en" target="_blank" rel="noopener noreferrer">help centre</a>.</p>
 
   <form

@@ -1,4 +1,37 @@
-# cDot
+/* /llms.txt - a plain-text summary of the site for language models.
+ *
+ * Generated rather than hand-kept, so the parts that used to go stale cannot:
+ *   - every URL is built from `site` (astro.config.mjs), not typed with the domain
+ *   - the three chains and their figures come from src/lib/chains.js, the same
+ *     data the network page and the structured data read
+ *   - the Resources articles are listed from Sanity, so a new article appears
+ *     here on the next build with no one remembering to add it
+ * What remains hand-written is the prose that describes the site itself (what
+ * cDot is, how it works, one line per page). Change it here, and when a page's
+ * purpose changes.
+ */
+import { CHAINS } from "../lib/chains.js";
+import { getArticles } from "../lib/sanity.js";
+
+/** One line of prose, however it was wrapped. */
+const oneLine = (s = "") => s.replace(/\s+/g, " ").trim();
+
+export async function GET({ site }) {
+  const u = (path) => new URL(path, site).href;
+  const articles = await getArticles();
+
+  const chains = CHAINS.map(
+    (c, i) =>
+      `${i + 1}. ${c.label} - ${c.headline.toLowerCase()}: ${c.description} ` +
+      `Specifications: ${c.chips.join("; ")}.` +
+      (c.note ? ` ${c.note}` : ""),
+  ).join("\n");
+
+  const resources = articles
+    .map((a) => `  - [${a.title}](${u(`/resources/${a.slug}/`)})` + (a.excerpt ? `: ${oneLine(a.excerpt)}` : ""))
+    .join("\n");
+
+  const text = `# cDot
 
 > cDot is the app for secure identity, email, messaging, and payments. When apps and websites
 > track everything you do, cDot keeps you private online: share only what you want, when you
@@ -20,21 +53,9 @@ not your data.
 
 ## The network
 
-Three chains, interoperable by design. Specifications are on https://cdot.app/network/.
+Three chains, interoperable by design. Specifications are on ${u("/network/")}.
 
-1. C-Layer - identity and asset recovery chain: a decentralised identity chain for people,
-   businesses, and agents. Cryptographic pseudonyms of verified real identities provide privacy
-   with accountability. 15,000 tx/s through a highly parallel architecture, WASM smart contracts,
-   20s finality, permissionless, public and pseudonymous, run by nodes around the world for
-   maximum resilience and decentralisation. Anyone can run a node and earn CDOT tokens.
-2. P-Layer - settlement chain: engineered for high-throughput, low-cost global stablecoin
-   settlement and truly programmable money, with native on- and off-ramping; 30,000 tx/s,
-   finality <1s, byzantine security 45%; agentic transactions supported with verifiable,
-   revocable permissions.
-3. T-Layer - trading chain: a high-performance decentralised exchange, offering stablecoin swaps
-   and perpetual futures in a predictable execution environment. 30,000 tx/s through native
-   multithreaded operations, finality <1s, a node-permissioned overlay on the C-layer, private
-   and accountable, native NASDAQ-like matching engine.
+${chains}
 
 ## Why it exists
 
@@ -49,32 +70,33 @@ permissions, cDot exists to close the gap.
 
 ## Pages
 
-- [cDot](https://cdot.app/): the app, its five products, how it works, and contact.
-- [Network](https://cdot.app/network/): the three chains and their specifications, plus the
+- [cDot](${u("/")}): the app, its five products, how it works, and where to get it.
+- [Network](${u("/network/")}): the three chains and their specifications, plus the
   live C-Layer node map and node-operator signup.
-- [c.ID](https://cdot.app/product/c-id/): prove your age, not your identity. A reusable,
+- [c.ID](${u("/product/c-id/")}): prove your age, not your identity. A reusable,
   privacy-preserving proof of age linked to your email address, using zero-knowledge proofs so
   a service learns only that you meet its age requirement. Includes an FAQ.
-- [c.Pay](https://cdot.app/product/c-pay/): instant, borderless, private payments -
+- [c.Pay](${u("/product/c-pay/")}): instant, borderless, private payments -
   stablecoin settlement, why the existing chains do not serve it, and the use cases.
-- [Email](https://cdot.app/product/c-email/): send authenticated, end-to-end encrypted
+- [Email](${u("/product/c-email/")}): send authenticated, end-to-end encrypted
   messages from your existing email address. Why use it, how it works, and an FAQ. Available on
   iOS, Android, and as a Chrome extension.
-- [c.Chat](https://cdot.app/product/c-chat/): decentralised private messaging.
-- [c.Vault](https://cdot.app/product/c-vault/): store and recover any asset.
-- [For developers](https://cdot.app/product/developers/): cut onboarding times and KYC costs
+- [c.Chat](${u("/product/c-chat/")}): decentralised private messaging.
+- [c.Vault](${u("/product/c-vault/")}): store and recover any asset.
+- [For developers](${u("/product/developers/")}): cut onboarding times and KYC costs
   with reusable, cross-platform identity verification. Integrate in five minutes and receive
   proofs instead of storing user data. Includes an FAQ.
-- [How it works](https://cdot.app/how-it-works/): the steps behind cDot - linking an existing
+- [How it works](${u("/how-it-works/")}): the steps behind cDot - linking an existing
   email address, one-time identity verification, key management on the C-layer, the three email
   security levels, hybrid post-quantum encryption, and c.ID.
-- [Privacy & security](https://cdot.app/security/): the privacy and security architecture -
+- [Privacy & security](${u("/security/")}): the privacy and security architecture -
   end-to-end encryption (HPKE with X-Wing: X25519 + ML-KEM-768), on-device biometrics, invisible
   2FA, key management, zero-knowledge proofs, the CASA independent assessment, and data storage.
-- [Resources](https://cdot.app/resources/): articles from the team on privacy, email security
-  and why cDot exists. Each article is its own page under https://cdot.app/resources/.
-- [FAQ](https://cdot.app/faq/)
-- [About](https://cdot.app/about/)
+- [Resources](${u("/resources/")}): articles from the team on privacy, email security
+  and why cDot exists.
+${resources}
+- [FAQ](${u("/faq/")})
+- [About](${u("/about/")})
 
 Note: c.Chat, c.Vault, FAQ and About are published but not yet written out in full.
 Prefer the pages above them for anything substantive.
@@ -93,3 +115,6 @@ Prefer the pages above them for anything substantive.
 
 cDot is technical infrastructure. Any regulated activities, including banking and payments, are
 performed by licensed partners.
+`;
+  return new Response(text, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+}

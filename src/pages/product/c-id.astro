@@ -10,13 +10,13 @@
  */
 import Layout from "../../layouts/Layout.astro";
 import StoreDropdown from "../../components/StoreDropdown.astro";
+import { IOS_URL as IOS, ANDROID_URL as ANDROID } from "../../lib/links.js";
+import { faqPage } from "../../lib/schema.js";
 
 const title = "Identity — cDot";
 const description =
   "c.ID is a reusable, privacy-preserving proof of age linked to your email address. Prove your age without revealing your identity or personal data.";
 
-const IOS = "https://apps.apple.com/gb/app/c-email-secure-email/id6787208131";
-const ANDROID = "https://play.google.com/store/apps/details?id=org.certonym.c.email&hl=en_GB";
 const DEMO = "https://agepass.xyz/";
 
 const STEPS = [
@@ -73,7 +73,7 @@ const FAQ = [
 ];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
 
 <div class="page-hero">
   <div class="wrap">
@@ -215,7 +215,7 @@ const FAQ = [
         </details>
       ))}
     </div>
-    <p class="lead faq-foot">Still have questions? <a href="/#contact">Get in touch</a>.</p>
+    <p class="lead faq-foot">Still have questions? <a href="/contact/">Get in touch</a>.</p>
   </div>
 </section>
 

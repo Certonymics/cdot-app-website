@@ -1,4 +1,9 @@
-# cdot.app
+/* robots.txt, generated so the domain comes from `site` in astro.config.mjs
+ * instead of being typed into a static file: a domain change used to leave the
+ * Sitemap line pointing at the old site. The policy below is unchanged and is
+ * explained in its own comments - edit it here, not in public/. */
+export function GET({ site }) {
+  const text = `# ${site.host}
 #
 # POLICY: let assistants read and cite this page live; do not let it be used as
 # training data. The two are controlled by different user-agents, so they are
@@ -67,4 +72,7 @@ Disallow: /
 
 # Structured summary for language models: /llms.txt
 
-Sitemap: https://cdot.app/sitemap.xml
+Sitemap: ${new URL("sitemap.xml", site).href}
+`;
+  return new Response(text, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
+}

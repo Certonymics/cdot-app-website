@@ -9,16 +9,15 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import StoreDropdown from "../components/StoreDropdown.astro";
 import shield from "../assets/security/esof-shield.png";
+import { CHROME_URL as CHROME } from "../lib/links.js";
 
 const title = "Privacy & security — cDot";
 const description =
   "How cDot keeps your emails safe and private: end-to-end encryption, post-quantum security, verified sending, and more.";
 
-const CHROME =
-  "https://chromewebstore.google.com/detail/cemail-beta/nkjndjopnihapdifnakhijbhpmcjioeb";
 
 /* Feather icon bodies; the <svg> wrapper is in the markup. */
-const ICONS = {
+const ICONS: Record<string, string> = {
   lock: '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
   phone: '<rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
   shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',

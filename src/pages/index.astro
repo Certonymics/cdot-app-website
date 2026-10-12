@@ -1,8 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import AppGallery from "../components/AppGallery.astro";
-import ContactFormScript from "../components/ContactFormScript.astro";
 import StoreDropdown from "../components/StoreDropdown.astro";
+import { cdotApplication } from "../lib/schema.js";
 
 /* These follow the TAGLINE, not the hero. The hero names the four products -
    "identity, email, messaging, and payments" - where the tagline collapses the
@@ -27,7 +27,7 @@ const HOW = [
 ];
 ---
 
-<Layout title={title} description={description} ogTitle={ogTitle} ogDescription={ogDescription}>
+<Layout title={title} description={description} ogTitle={ogTitle} ogDescription={ogDescription} extraSchema={[cdotApplication(Astro.site)]}>
 
 <div class="hero">
   <div class="watermark" aria-hidden="true">
@@ -38,7 +38,7 @@ const HOW = [
     <p class="sub">When apps and websites track everything you do, stay private online with cDot. Share only what you want, when you want.</p>
     <div class="hero-ctas">
       <StoreDropdown label="Download the app" id="dl-home" />
-      <a class="btn btn-ghost" href="/network">Discover the network</a>
+      <a class="btn btn-ghost" href="/network/">Discover the network</a>
     </div>
   </div>
 </div>
@@ -75,7 +75,7 @@ const HOW = [
   <div class="wrap">
     <h2>Why cDot exists</h2>
     <p class="lead">The internet never came with a way to prove who you are, keep your data private, or move money safely. cDot is the internet&rsquo;s missing piece: letting you move across the internet untracked and ensuring your money stays yours, whatever happens. Our network is run by a worldwide community — and because it&rsquo;s open-source, anyone can build on it.</p>
-    <p class="lead why-more"><a href="/about">Learn more about cDot</a></p>
+    <p class="lead why-more"><a href="/about/">Learn more about cDot</a></p>
   </div>
 </section>
 
@@ -92,40 +92,29 @@ const HOW = [
 
 <div class="divider"></div>
 
-<section id="contact">
+<section id="get-cdot">
   <div class="wrap">
-    <h2>Want to know more? Get in touch.</h2>
-    <form id="contactForm">
-    <div class="contact-grid">
-        <div class="contact-fields">
-          <div class="field">
-            <label for="cf-email">Email</label>
-            <input id="cf-email" type="email" name="email" autocomplete="email" required>
-          </div>
-          <div class="field">
-            <label for="cf-msg">Message</label>
-            <textarea id="cf-msg" name="message" maxlength="5000" required></textarea>
-          </div>
-          <!-- Honeypot: hidden from people, filled in by bots. -->
-          <input class="cf-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-          <!-- Replaces the fields above on success; also carries error text. -->
-          <p class="cf-status" id="cf-status" role="status" aria-live="polite" tabindex="-1"></p>
-        </div>
-      <noscript>
-        <p class="cf-status is-error">This form needs JavaScript. Please email
-        <a href="mailto:info@certonymity.com">info@certonymity.com</a> instead.</p>
-      </noscript>
-      <div class="addr">
-        <p>cDot — built by Certonymity</p>
-        <p><a href="mailto:info@certonymity.com">info@certonymity.com</a></p>
-        <p>Certonymity Ltd<br>86-87 Campden Street<br>London<br>W8 7EN</p>
+    <div class="cta-banner">
+      <h2>Ready to take control of your data?</h2>
+      <p class="lead">Get started with cDot, the app for secure identity, communication and payments.</p>
+      <div class="hero-ctas">
+        <StoreDropdown label="Get cDot" id="dl-cta" />
+        <a class="btn btn-ghost" href="https://cdot.world/" target="_blank" rel="noopener noreferrer">Explore the project</a>
       </div>
     </div>
-    <button class="btn btn-primary" type="submit" style="margin-top:18px">Send message</button>
-    </form>
   </div>
 </section>
 
-<ContactFormScript />
-
 </Layout>
+
+<style>
+  /* A card, not a wash: gradients belong to heroes only (see global.css). */
+  .cta-banner{
+    padding:64px 32px;text-align:center;
+    border:1px solid var(--line);border-radius:20px;
+    background:linear-gradient(160deg,var(--card),transparent 60%);
+  }
+  .cta-banner h2,.cta-banner .lead{margin-inline:auto}
+  .cta-banner .hero-ctas{justify-content:center}
+  @media(max-width:640px){.cta-banner{padding:44px 20px}}
+</style>

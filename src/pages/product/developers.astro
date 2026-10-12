@@ -14,13 +14,14 @@
  * highlighter - that would be a dependency and a client runtime for colour.
  */
 import Layout from "../../layouts/Layout.astro";
+import { faqPage } from "../../lib/schema.js";
 
 const title = "For developers — cDot";
 const description =
-  "Cut onboarding times and KYC costs with reusable, cross-platform identity verification. Integrate cDot in five minutes and receive proofs instead of storing user data.";
+  "Cut onboarding times and KYC costs with reusable, cross-platform identity verification. Integrate cDot in five minutes and receive proofs, not user data.";
 
 /* Feather icon bodies; the <svg> wrapper lives in the markup. */
-const I = {
+const I: Record<string, string> = {
   userCheck: '<path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/>',
   dollar:    '<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>',
   code:      '<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
@@ -109,7 +110,7 @@ if (result.kind === "redirect") {
    word "const" inside an English sentence in a comment. The remaining code is
    then matched by ONE alternation, so no rule can strike inside the markup an
    earlier rule just emitted. */
-const esc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /* Deliberately sparing, because Prism is. Everything not listed here stays the
    base #24292f: class names like CDot, object keys like `baseUrl:`, and
@@ -132,8 +133,8 @@ const TOKENS = new RegExp(
   "g",
 );
 
-const code_tokens = (chunk) =>
-  esc(chunk).replace(TOKENS, (m, kw, num, konst, fn) =>
+const code_tokens = (chunk: string) =>
+  esc(chunk).replace(TOKENS, (m: string, kw?: string, num?: string, konst?: string, fn?: string) =>
     kw    ? `<span class="c-kw">${kw}</span>`
     : num   ? `<span class="c-num">${num}</span>`
     : konst ? `<span class="c-num">${konst}</span>`
@@ -141,7 +142,7 @@ const code_tokens = (chunk) =>
     : m,
   );
 
-function highlight(code) {
+function highlight(code: string) {
   return code.split("\n").map((line) => {
     let out = "";
     let i = 0;
@@ -182,11 +183,11 @@ const FAQ = [
     <p>Often, too many documents are required to prove a single identity, thanks to different ID types, renewed or new documents, name or address changes, and so on. People lack the ability to manage their digital identity in a single place.</p>
     <p>We think this model is fundamentally broken, so we created cDot as a secure, efficient, privacy-first alternative.</p>` },
   { q: "How do I get started?", html: `
-    <p>Integrating or building with cDot is easy. <a href="/#contact">Contact us</a> to get a demo, or get an API key straight away, then copy <a href="#integration">the lines of code above</a>.</p>` },
+    <p>Integrating or building with cDot is easy. <a href="/contact/">Contact us</a> to get a demo, or get an API key straight away, then copy <a href="#integration">the lines of code above</a>.</p>` },
 ];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
 
 <div class="page-hero">
   <div class="wrap">
@@ -343,7 +344,7 @@ const FAQ = [
         </details>
       ))}
     </div>
-    <p class="lead faq-foot">Still have questions? <a href="/#contact">Get in touch</a>.</p>
+    <p class="lead faq-foot">Still have questions? <a href="/contact/">Get in touch</a>.</p>
   </div>
 </section>
 

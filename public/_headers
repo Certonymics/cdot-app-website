@@ -1,0 +1,26 @@
+# Response headers for Cloudflare Pages (https://developers.cloudflare.com/pages/configuration/headers/).
+# Applies to everything the site serves.
+#
+# The Content-Security-Policy that restricts scripts, styles and requests is NOT
+# here: scripts/csp.mjs writes it into each page after the build, because it has
+# to contain a hash of every inline script on that page. Only the part a <meta>
+# tag cannot express, frame-ancestors, is set here.
+
+/*
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=()
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=31536000
+
+# Build output is named by content hash (/_astro/app.3f9a1c.css), so a file never
+# changes under the same URL and can be cached for a year.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Not hashed (map.js, the logos, og.png), so cached for a day rather than a year,
+# with a week of serving a stale copy while it revalidates in the background.
+/assets/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

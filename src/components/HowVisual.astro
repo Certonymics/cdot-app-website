@@ -48,8 +48,8 @@ const CIPHER = [
 ---
 {v === "link" && (
                 <div class="hv-tiles">
-                  <span><img src="/assets/gmail-logo.svg" alt="" width="34" height="34" /></span>
-                  <span><img src="/assets/outlook-logo.svg" alt="" width="34" height="34" /></span>
+                  <span><img src="/assets/gmail-logo.webp" alt="" width="34" height="34" /></span>
+                  <span><img src="/assets/outlook-logo.webp" alt="" width="34" height="34" /></span>
                   <span>
                     <svg viewBox="0 -960 960 960" width="34" height="34">
                       <path d="M145.09-145.87q-32.51 0-55.87-23.35-23.35-23.36-23.35-55.87v-509.82q0-32.74 23.35-56.26 23.36-23.53 55.87-23.53h669.82q32.74 0 56.26 23.53 23.53 23.52 23.53 56.26v509.82q0 32.51-23.53 55.87-23.52 23.35-56.26 23.35H145.09ZM480-443.91l-334.91-223v441.82h669.82v-441.82L480-443.91Zm0-73 330.91-218H150.09l329.91 218Zm-334.91-150v-68 509.82-441.82Z"/>
@@ -141,6 +141,8 @@ const CIPHER = [
     align-items:center;justify-content:center;flex-shrink:0;
     border:1px solid rgba(86,106,253,.2);background:rgba(235,245,255,.7)}
   .hv-tiles svg{fill:#566afd}
+  /* Raster logos in a square box: fit inside it rather than stretch to it. */
+  .hv-tiles img{object-fit:contain}
 
   .hv-rows{display:flex;flex-direction:column;gap:10px}
   .hv-row{display:flex;align-items:center;gap:11px;padding:12px;border-radius:12px;

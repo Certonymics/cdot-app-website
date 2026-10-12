@@ -1,4 +1,5 @@
 ---
+import { IOS_URL as IOS, ANDROID_URL as ANDROID } from "../lib/links.js";
 /* App store download button.
  *
  * One button over both stores rather than a link to whichever platform got
@@ -21,8 +22,6 @@ interface Props {
 }
 const { label, id, itemLabels = ["App Store", "Google Play"], extra } = Astro.props;
 
-const IOS = "https://apps.apple.com/gb/app/c-email-secure-email/id6787208131";
-const ANDROID = "https://play.google.com/store/apps/details?id=org.certonym.c.email&hl=en_GB";
 
 /* The real store marks, taken from react-icons' Fa set in c.email-website -
    the same icons that site uses. Lifted rather than redrawn: an approximated

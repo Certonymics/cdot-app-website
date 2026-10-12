@@ -1,12 +1,14 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { cdotApplication, chainLayers } from "../lib/schema.js";
+import { CHAINS } from "../lib/chains.js";
 
 const title = "Network \u2014 cDot";
 const description =
-  "cDot is an open-source blockchain project solving the problems of privacy and accountability everywhere on the internet \u2014 from identity checks to communications and transactions.";
+  "cDot is an open-source blockchain project solving privacy and accountability online, from identity checks to communications and transactions.";
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} extraSchema={[cdotApplication(Astro.site, { withChains: true }), ...chainLayers(Astro.site)]}>
 
 <div class="page-hero">
   <div class="wrap">
@@ -24,40 +26,16 @@ const description =
          scroll container itself has to be reachable for a keyboard user to see
          past the first card. -->
     <div class="chains" tabindex="0" role="group" aria-label="The three cDot chains: C-Layer, P-Layer and T-Layer">
-      <div class="chain">
-        <span class="chain-id">C-Layer</span>
-        <h3>Identity and asset recovery chain</h3>
-        <p>A decentralised identity chain for people, businesses, and agents. Cryptographic pseudonyms of verified real identities provide privacy with accountability. Run by nodes around the world for maximum resilience and decentralisation.</p>
-        <div class="specs">
-          <span>15,000 tx/s, highly parallel</span>
-          <span>WASM smart contracts</span>
-          <span>20s finality</span>
-          <span>Permissionless</span>
-          <span>Public and pseudonymous</span>
+      {CHAINS.map((c) => (
+        <div class="chain">
+          <span class="chain-id">{c.label}</span>
+          <h3>{c.headline}</h3>
+          <p>{c.description}</p>
+          <div class="specs">
+            {c.chips.map((chip) => <span>{chip}</span>)}
+          </div>
         </div>
-      </div>
-      <div class="chain">
-        <span class="chain-id">P-Layer</span>
-        <h3>Settlement chain</h3>
-        <p>Engineered for high-throughput, low-cost global stablecoin settlement and truly programmable money, with native on- and off-ramping. Agentic transactions supported with verifiable, revocable permissions.</p>
-        <div class="specs">
-          <span>30,000 tx/s</span>
-          <span>Finality &lt;1s</span>
-          <span>Byzantine security 45%</span>
-        </div>
-      </div>
-      <div class="chain">
-        <span class="chain-id">T-Layer</span>
-        <h3>Trading chain</h3>
-        <p>A high-performance decentralised exchange, offering stablecoin swaps and perpetual futures in a predictable execution environment.</p>
-        <div class="specs">
-          <span>30,000 tx/s, native multithreading</span>
-          <span>Finality &lt;1s</span>
-          <span>Node-permissioned overlay on C-layer</span>
-          <span>Private and accountable</span>
-          <span>Native NASDAQ-like matching engine</span>
-        </div>
-      </div>
+      ))}
     </div>
   </div>
 </section>

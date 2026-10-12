@@ -23,7 +23,7 @@ const TABS = [
 
 /* Icon bodies only - the <svg> wrapper is in the markup, so every icon gets the
    same box and stroke without repeating the attributes fifteen times. */
-const I = {
+const I: Record<string, string> = {
   link:   '<path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/>',
   shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
   user:   '<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"/>',
@@ -41,7 +41,7 @@ const I = {
   search: '<circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>',
 };
 
-const PILLS = {
+const PILLS: Record<string, [string, string][]> = {
   identity: [["link", "Reusable identity proofs"], ["shield", "No personal data shared"], ["user", "Anonymous by default"]],
   email:    [["lock", "End-to-end encrypted"], ["check", "Anti-spam authentication"], ["face", "Face unlock for sensitive emails"]],
   chat:     [["lock", "End-to-end encrypted"], ["shield", "Verified senders"], ["user", "No email or phone number needed"]],
@@ -52,14 +52,14 @@ const PILLS = {
 /* Signed distance from the active tab, wrapping both ways: with five screens
    that gives 0, ±1, ±2, so the two furthest away sit off-stage whichever
    direction you came from. Rendered for tab 0; the script recomputes it. */
-const off = (i, active = 0) => {
+const off = (i: number, active = 0) => {
   const d = (i - active + TABS.length) % TABS.length;
   return d > TABS.length / 2 ? d - TABS.length : d;
 };
 
 /* Which bottom-nav item is lit on each screen. */
 const NAV = [["inbox", "Inbox"], ["chat", "Chat"], ["wallet", "Wallet"], ["apps", "Apps"], ["shield", "Vault"]];
-const NAV_ON = { identity: 0, email: 0, chat: 1, pay: 2, vault: 4 };
+const NAV_ON: Record<string, number> = { identity: 0, email: 0, chat: 1, pay: 2, vault: 4 };
 
 const EMAILS = [
   ["SM", "Sophie Martin", "29 May", "7a21f0::secured payload", "enc://v1:4c9f8e7a118b5d7f33f2", null, true],

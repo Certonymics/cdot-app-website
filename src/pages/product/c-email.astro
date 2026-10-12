@@ -13,14 +13,15 @@
 import Layout from "../../layouts/Layout.astro";
 import StoreDropdown from "../../components/StoreDropdown.astro";
 import HowVisual from "../../components/HowVisual.astro";
+import type { ComponentProps } from "astro/types";
 import FeatureCarousel from "../../components/FeatureCarousel.astro";
+import { CHROME_URL as CHROME } from "../../lib/links.js";
+import { faqPage } from "../../lib/schema.js";
 
 const title = "Email \u2014 cDot";
 const description =
   "Send authenticated, end-to-end encrypted messages from your existing email address. Available on iOS, Android, and Chrome.";
 
-const CHROME =
-  "https://chromewebstore.google.com/detail/cemail-beta/nkjndjopnihapdifnakhijbhpmcjioeb";
 
 const WHY = [
   { v: "enc",     t: "Protect your emails from prying eyes",
@@ -54,7 +55,8 @@ const DATA_ROWS = [
   ["Document", "Passport"],
   ["Biometrics", "\u2022\u2022\u2022\u2022\u2022\u2022"],
 ];
-const HOW = [
+type Visual = ComponentProps<typeof HowVisual>["v"];
+const HOW: { v: Visual; t: string; b: string }[] = [
   { v: "link",   t: "Link your email address",
     b: "Choose any Gmail or Outlook address to connect instantly." },
   { v: "verify", t: "Confirm your identity",
@@ -93,7 +95,7 @@ const FAQ = [
 ];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
 
 <div class="page-hero">
   <div class="wrap">

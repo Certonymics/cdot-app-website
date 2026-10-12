@@ -48,8 +48,41 @@ const QUERY = `
   }
 `;
 
+/**
+ * @typedef {Object} Cover
+ * @property {string | null} [alt]
+ * @property {string | null} [url]
+ * @property {number | null} [width]
+ * @property {number | null} [height]
+ */
+/**
+ * @typedef {Object} CtaOverride
+ * @property {string} [heading]
+ * @property {string} [body]
+ * @property {string} [secondButtonLabel]
+ * @property {string} [secondButtonHref]
+ */
+/**
+ * One article from the Studio's `article` type, with the fields the query below
+ * selects. Most are optional in the Studio, so they are optional here.
+ * @typedef {Object} Article
+ * @property {string} slug
+ * @property {string} title
+ * @property {string} [excerpt]
+ * @property {string | null} [date] publishedAt, which is currently unset on every article
+ * @property {string} published publishedAt, else the creation date
+ * @property {string} modified
+ * @property {string | null} [readTime]
+ * @property {boolean | null} [featured]
+ * @property {CtaOverride | null} [cta]
+ * @property {Cover | null} [cover]
+ * @property {any[] | null} [body] Portable Text blocks
+ */
+
+/** @type {Promise<Article[]> | undefined} */
 let cached;
 
+/** @returns {Promise<Article[]>} */
 async function load() {
   const url = `https://${PROJECT_ID}.${host}/v${API_VERSION}/data/query/${DATASET}?query=${encodeURIComponent(QUERY)}`;
   let articles;
@@ -72,23 +105,38 @@ async function load() {
   return articles;
 }
 
-/** All articles, newest first. Fetched once per build. */
+/**
+ * All articles, newest first. Fetched once per build.
+ * @returns {Promise<Article[]>}
+ */
 export function getArticles() {
   if (!import.meta.env.PROD) return load();
   return (cached ??= load());
 }
 
-/** The hero card: the article flagged `featured`, otherwise the newest. */
+/**
+ * The hero card: the article flagged `featured`, otherwise the newest.
+ * @param {Article[]} articles
+ * @returns {Article | null}
+ */
 export function pickFeatured(articles) {
   return articles.find((a) => a.featured) ?? articles[0] ?? null;
 }
 
-/** Up to three other articles, newest first. */
+/**
+ * Up to three other articles, newest first.
+ * @param {Article[]} articles
+ * @param {string} slug
+ */
 export function relatedTo(articles, slug) {
   return articles.filter((a) => a.slug !== slug).slice(0, 3);
 }
 
-/* Date and read time are both optional in Sanity, so show only what is set. */
+/**
+ * Date and read time are both optional in Sanity, so show only what is set.
+ * @param {string | null | undefined} iso
+ * @returns {string | null}
+ */
 export function formatDate(iso) {
   if (!iso) return null;
   return new Date(iso).toLocaleDateString("en-GB", {
@@ -99,6 +147,7 @@ export function formatDate(iso) {
   });
 }
 
+/** @param {Article} article */
 export function byline(article) {
   return [formatDate(article.date), article.readTime].filter(Boolean).join(" · ");
 }

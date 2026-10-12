@@ -1,14 +1,17 @@
 ---
-/* Contact form. POSTs to the Google Apps Script in scripts/contact-form.gs,
- * which records the enquiry in a sheet and emails the team. That script is a
- * separate deployment from the c.Email one - see its header comment.
+/* Contact form handler. POSTs to the Google Apps Script named by the form's
+ * data-endpoint, which records the enquiry in a sheet and emails the team. The
+ * script's source is c.email-website/scripts/contact-form.gs - that repo holds
+ * the canonical copy; the one deployed in Google must match it.
  *
- * Shared by the homepage form and /contact: both render a <form id="contactForm">
+ * Used by /contact (the homepage had its own copy of this form until it was
+ * replaced by a call to action). It expects a <form id="contactForm">
  * with #cf-email, #cf-msg, #cf-status, a .cf-honeypot and a .contact-fields
  * wrapper around the .field blocks, which is what this script looks for.
  *
- * /contact adds three optional things, all declared on the form itself:
- *   data-endpoint                  posts there instead of to CONTACT_FORM_URL
+ * /contact adds three things, all declared on the form itself:
+ *   data-endpoint                  required: where to post. Without it the form
+ *                                  reports that it is not connected
  *   a #cf-type <select>            its value is sent as `type`
  *   data-message-optional-for      the type for which the message is optional;
  *                                  #cf-msg-hint is shown and the label changes
@@ -16,15 +19,11 @@
 ---
 <script is:inline>
 (function(){
-  /* Public by design - see the header comment in scripts/contact-form.gs.
-     Replace with the /exec URL of the deployed cDot contact-form script. */
-  const CONTACT_FORM_URL =
-    'https://script.google.com/macros/s/AKfycbzkT4I_iMLiBBKRZeKdSEU2ohJVpfOFd4UA-tk2ss4p2YddFDbvU1OFPnjHcr0RaOHdUA/exec';
-
   const form = document.getElementById('contactForm');
   const statusEl = document.getElementById('cf-status');
   const button = form.querySelector('button[type="submit"]');
-  const endpoint = form.dataset.endpoint || CONTACT_FORM_URL;
+  /* Public by design: the script only appends rows and has no doGet. */
+  const endpoint = form.dataset.endpoint;
   const typeSel = document.getElementById('cf-type');
   const msgEl = document.getElementById('cf-msg');
   const msgLabel = form.querySelector('label[for="cf-msg"]');

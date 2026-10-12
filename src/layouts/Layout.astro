@@ -7,6 +7,13 @@ import "../styles/global.css";
 import LogoSymbol from "../components/LogoSymbol.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { organization, website, webPage, breadcrumbList } from "../lib/schema.js";
+/* ?url gives the same hashed file the @font-face rules point at, so the preload
+   below matches the font the stylesheet will ask for. Only the two latin
+   subsets every page paints on first view: Geist (body) and Host Grotesk
+   (headings, including the H1 that is usually the largest paint). */
+import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
+import hostGroteskLatin from "@fontsource-variable/host-grotesk/files/host-grotesk-latin-wght-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -25,6 +32,13 @@ interface Props {
   ogImage?: string;
   ogImageAlt?: string;
   extraSchema?: object[];
+  /* schema.org page type, where WebPage is too generic. */
+  pageType?: "WebPage" | "AboutPage" | "ContactPage" | "CollectionPage";
+  /* Breadcrumb between Home and this page, e.g. Resources above an article.
+     `crumbName` names this page in the trail when the title is not what you
+     want there. */
+  breadcrumbs?: { name: string; path: string }[];
+  crumbName?: string;
 }
 const {
   title,
@@ -36,124 +50,28 @@ const {
   ogImage,
   ogImageAlt,
   extraSchema = [],
+  pageType = "WebPage",
+  breadcrumbs = [],
+  crumbName,
 } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
+/* `site` is set in astro.config.mjs, so it is always defined here. */
+const site = Astro.site!;
+const canonical = new URL(Astro.url.pathname, site).href;
 
-/* Structured data. A @graph rather than a single Organization node: the three
-   chains are the substance of the product, and as discrete SoftwareApplication
-   entities their specifications become extractable facts (a numeric
-   `throughput` PropertyValue) instead of prose buried in one description
-   string. Keep the figures here in step with the spec chips in index.astro and
-   with public/llms.txt. */
-/* Derived from `site` in astro.config.mjs, never written out. These ids are
-   the stable identity of the org and the product across the whole graph, and
-   nine hardcoded copies of the domain is exactly how they drift apart. */
-const SITE = Astro.site.href;
-const abs = (path) => new URL(path, Astro.site).href;
-const ORG_ID = `${SITE}#certonymity`;
-const CDOT_ID = `${SITE}#cdot`;
-
-/* PropertyValue is schema.org's escape hatch for domain-specific measurements
-   that have no dedicated property. Numeric `value` + `unitText` keeps the
-   figure machine-comparable; `unitText` alone would force string parsing. */
-const spec = (name, value, unitText) =>
-  unitText
-    ? { "@type": "PropertyValue", name, value, unitText }
-    : { "@type": "PropertyValue", name, value };
-
-const layer = (id, name, alternateName, category, description, specs) => ({
-  "@type": "SoftwareApplication",
-  "@id": `${SITE}#${id}`,
-  name,
-  alternateName,
-  applicationCategory: category,
-  operatingSystem: "Any",
-  isPartOf: { "@id": CDOT_ID },
-  provider: { "@id": ORG_ID },
-  description,
-  additionalProperty: specs,
-});
-
-const graph = [
-  {
-    "@type": "Organization",
-    "@id": ORG_ID,
-    name: "Certonymity Ltd",
-    legalName: "Certonymity Ltd",
-    alternateName: "Certonymity",
-    url: SITE,
-    logo: abs("assets/logo-512.png"),
-    email: "info@certonymity.com",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "86-87 Campden Street",
-      addressLocality: "London",
-      postalCode: "W8 7EN",
-      addressCountry: "GB",
-    },
-    description:
-      "Certonymity Ltd builds cDot, the app for secure identity, communication and payments, and the purpose-built blockchain network behind it.",
-  },
-  {
-    "@type": "SoftwareApplication",
-    "@id": CDOT_ID,
-    name: "cDot",
-    applicationCategory: "FinanceApplication",
-    operatingSystem: "Any",
-    provider: { "@id": ORG_ID },
-    url: SITE,
-    description:
-      "cDot is the app for secure identity, communication and payments: stay private online and share only what you want, when you want. Underneath, it is a blockchain network, a family of purpose-built chains each engineered for what it does best (identity, stablecoin settlement, and trading) operating as one trusted network.",
-    hasPart: [
-      { "@id": `${SITE}#c-layer` },
-      { "@id": `${SITE}#p-layer` },
-      { "@id": `${SITE}#t-layer` },
-    ],
-  },
-  layer(
-    "c-layer",
-    "C-Layer",
-    "cDot identity and asset recovery chain",
-    "SecurityApplication",
-    "A decentralised identity chain for people, businesses, and agents. Cryptographic pseudonyms of verified real identities provide privacy with accountability. Run by nodes around the world for maximum resilience and decentralisation.",
-    [
-      spec("Throughput", 15000, "tx/s"),
-      spec("Finality", 20, "s"),
-      spec("Smart contracts", "WASM"),
-      spec("Architecture", "Highly parallel"),
-      spec("Access", "Permissionless"),
-      spec("Visibility", "Public and pseudonymous"),
-    ],
-  ),
-  layer(
-    "p-layer",
-    "P-Layer",
-    "cDot settlement chain",
-    "FinanceApplication",
-    "Engineered for high-throughput, low-cost global stablecoin settlement and truly programmable money, with native on- and off-ramping. Agentic transactions supported with verifiable, revocable permissions.",
-    [
-      spec("Throughput", 30000, "tx/s"),
-      spec("Finality", "<1", "s"),
-      spec("Byzantine security", "45%"),
-    ],
-  ),
-  layer(
-    "t-layer",
-    "T-Layer",
-    "cDot trading chain",
-    "FinanceApplication",
-    "A high-performance decentralised exchange, offering stablecoin swaps and perpetual futures in a predictable execution environment.",
-    [
-      spec("Throughput", 30000, "tx/s"),
-      spec("Finality", "<1", "s"),
-      spec("Architecture", "Native multithreading"),
-      spec("Nodes", "Node-permissioned overlay on C-layer"),
-      spec("Visibility", "Private and accountable"),
-      spec("Matching engine", "Native NASDAQ-like"),
-    ],
-  ),
-];
-
+/* Structured data: see src/lib/schema.js. Every page gets the organisation and
+   the website; an indexable one also gets itself and its breadcrumb (the
+   homepage has no trail to show). Anything more specific comes in through
+   `extraSchema`. The 404 is not a destination, so it describes none. */
+const graph: object[] = [organization(site), website(site)];
+if (!noindex) {
+  const trail = Astro.url.pathname === "/" ? null : [
+    { name: "cDot", url: site.href },
+    ...breadcrumbs.map((b) => ({ name: b.name, url: new URL(b.path, site).href })),
+    { name: crumbName ?? title.replace(/\s+[\u2014-]\s+cDot$/, ""), url: canonical },
+  ];
+  graph.push(webPage(site, { url: canonical, name: title, description, type: pageType, hasBreadcrumb: !!trail }));
+  if (trail) graph.push(breadcrumbList(canonical, trail));
+}
 const orgSchema = { "@context": "https://schema.org", "@graph": [...graph, ...extraSchema] };
 ---
 
@@ -167,9 +85,10 @@ const orgSchema = { "@context": "https://schema.org", "@graph": [...graph, ...ex
    Built by Certonymity Ltd.
 
    You are reading the whole page. No framework runtime, no analytics, no tag
-   manager, no third-party scripts, no font CDN. The only JavaScript is a
-   contact form and the network map - and that map plots real nodes reporting
-   in from real machines, not a decorative loop.
+   manager, no third-party scripts, no font CDN. The JavaScript here is small,
+   hand-written and inline: the menus and store dropdowns, the feature carousel
+   and scroll-driven steps, the forms, and the network map - which plots real
+   nodes reporting in from real machines, not a decorative loop.
 
    robots.txt draws a line: retrieval and citation are welcome,
    training is not.
@@ -178,6 +97,11 @@ const orgSchema = { "@context": "https://schema.org", "@graph": [...graph, ...ex
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- crossorigin is required on a font preload even though it is same-origin:
+     fonts are fetched in anonymous-CORS mode, and without it the preload is
+     discarded and the font downloads twice. -->
+<link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
+<link rel="preload" href={hostGroteskLatin} as="font" type="font/woff2" crossorigin />
 <!-- Matches --bg-0 so mobile browser chrome does not disagree with the page.
      Kept in step with the theme by the script below; the value here is the
      light default, used until that script runs. -->
@@ -246,7 +170,7 @@ const orgSchema = { "@context": "https://schema.org", "@graph": [...graph, ...ex
 <meta property="og:type" content={ogType} />
 <meta property="og:site_name" content="cDot" />
 <meta property="og:locale" content="en_GB" />
-<meta property="og:image" content={ogImage ?? new URL('/assets/og.png', Astro.site).href} />
+<meta property="og:image" content={ogImage ?? new URL('/assets/og.png', site).href} />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content={ogImage ? (ogImageAlt ?? title) : "cDot - secure identity, communication and payments"} />
@@ -260,9 +184,10 @@ const orgSchema = { "@context": "https://schema.org", "@graph": [...graph, ...ex
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to main content</a>
 <LogoSymbol />
 <Header />
-<main id="main"><slot /></main>
+<main id="main" tabindex="-1"><slot /></main>
 <Footer />
 </body>
 </html>

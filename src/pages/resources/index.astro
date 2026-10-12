@@ -13,13 +13,14 @@ import PostCard from "../../components/PostCard.astro";
 import { getArticles, pickFeatured } from "../../lib/sanity.js";
 
 const title = "Resources — cDot";
-const description = "Privacy insights, news, and guides from the cDot team.";
+const description =
+  "Privacy insights, news, and guides from the cDot team on secure identity, encrypted email and staying private online.";
 
 const articles = await getArticles();
 const featured = pickFeatured(articles);
 const rest = articles.filter((a) => a !== featured);
 ---
-<Layout title={title} description={description}>
+<Layout title={title} description={description} pageType="CollectionPage">
 
 <div class="page-hero">
   <div class="wrap">

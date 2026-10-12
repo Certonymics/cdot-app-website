@@ -15,6 +15,7 @@
  * of the size - and go through Astro's image pipeline like any other image.
  */
 import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import encryption from "../assets/features/1h.webp";
 import verified from "../assets/features/2b.webp";
 import eyesOnly from "../assets/features/3c.webp";
@@ -52,7 +53,7 @@ const ITEMS = [
 /* Displayed height is fixed in CSS (the phones are all the same height), so the
    width to request follows from each image's own ratio. 2x for sharp screens. */
 const SHOW_H = 420;
-const widthFor = (img) => Math.round((SHOW_H * img.width) / img.height);
+const widthFor = (img: ImageMetadata) => Math.round((SHOW_H * img.width) / img.height);
 ---
 <div class="fc" data-fc role="region" aria-roledescription="carousel" aria-label="c.Email features">
   <div class="fc-slides" aria-live="polite">

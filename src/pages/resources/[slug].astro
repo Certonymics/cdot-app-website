@@ -13,10 +13,12 @@
  * carries Article structured data and its own social image.
  */
 import { Image, getImage } from "astro:assets";
+import type { InferGetStaticPropsType } from "astro";
 import Layout from "../../layouts/Layout.astro";
 import StoreDropdown from "../../components/StoreDropdown.astro";
 import { getArticles, relatedTo, byline } from "../../lib/sanity.js";
 import { renderBody } from "../../lib/portable-text.js";
+import { CHROME_URL as CHROME } from "../../lib/links.js";
 
 export async function getStaticPaths() {
   const articles = await getArticles();
@@ -26,32 +28,37 @@ export async function getStaticPaths() {
   }));
 }
 
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 const { article, related } = Astro.props;
-const { cover, cta = {} } = article;
+const { cover, cta } = article;
+/* `site` is set in astro.config.mjs, so it is always defined here. */
+const site = Astro.site!;
 
 const title = `${article.title} — cDot`;
-const url = new URL(`/resources/${article.slug}/`, Astro.site).href;
+/* The Studio requires an excerpt, but the data layer cannot promise it. */
+const description = article.excerpt || `${article.title}, from the cDot team.`;
+const url = new URL(`/resources/${article.slug}/`, site).href;
 const meta = byline(article);
 const html = await renderBody(article.body);
 
 /* Cover: 3:1, as uploaded in the Studio. Never larger than the source. */
-const heroW = cover?.url ? Math.min(cover.width, 2064) : 0;
+const heroW = cover?.url ? Math.min(cover.width ?? 0, 2064) : 0;
 const heroH = Math.round(heroW / 3);
 const heroWidths = [1032, 2064].filter((w) => w <= heroW);
 
 /* Social card: 1200x630 JPEG, built from the cover and hosted here. Skipped for
    a cover too small to fill it, which falls back to the site-wide card. */
-const og = cover?.url && cover.width >= 1200 && cover.height >= 630
+const og = cover?.url && (cover.width ?? 0) >= 1200 && (cover.height ?? 0) >= 630
   ? await getImage({ src: cover.url, width: 1200, height: 630, format: "jpg" })
   : null;
-const ogImage = og ? new URL(og.src, Astro.site).href : undefined;
+const ogImage = og ? new URL(og.src, site).href : undefined;
 
-const ORG_ID = `${Astro.site.href}#certonymity`;
+const ORG_ID = `${site.href}#certonymity`;
 const extraSchema = [{
   "@type": "Article",
   "@id": `${url}#article`,
   headline: article.title,
-  description: article.excerpt,
+  description,
   url,
   mainEntityOfPage: url,
   datePublished: article.published,
@@ -63,8 +70,6 @@ const extraSchema = [{
 
 /* Each CTA field falls back on its own, so filling in only the heading in the
    Studio overrides the heading and keeps the rest of the default card. */
-const CHROME =
-  "https://chromewebstore.google.com/detail/cemail-beta/nkjndjopnihapdifnakhijbhpmcjioeb";
 const heading = cta?.heading || "Try cDot free";
 const body = cta?.body || "Encrypted, authenticated email from your existing address.";
 const secondHref = cta?.secondButtonLabel && cta?.secondButtonHref
@@ -75,11 +80,13 @@ const secondHref = cta?.secondButtonLabel && cta?.secondButtonHref
 ---
 <Layout
   title={title}
-  description={article.excerpt}
+  description={description}
   ogType="article"
   ogImage={ogImage}
   ogImageAlt={cover?.alt || article.title}
   extraSchema={extraSchema}
+  breadcrumbs={[{ name: "Resources", path: "/resources/" }]}
+  crumbName={article.title}
 >
 
 <div class="page-hero">
@@ -119,7 +126,7 @@ const secondHref = cta?.secondButtonLabel && cta?.secondButtonHref
           <StoreDropdown label="Get cDot" id="dl-article" extra={{ label: "Chrome extension", href: CHROME }} />
           {secondHref && (
             <a class="btn btn-ghost" href={secondHref} target="_blank" rel="noopener noreferrer">
-              {cta.secondButtonLabel}
+              {cta?.secondButtonLabel}
             </a>
           )}
         </div>
