@@ -2,6 +2,7 @@
 /* Laid out like the c.Email footer: the mark on the left, the link row on the
    right, the copyright underneath. The regulatory note stays, as the quietest
    band at the very bottom. */
+import { CERTONYMITY_URL } from "../lib/links.js";
 const year = new Date().getFullYear();
 const path = Astro.url.pathname;
 
@@ -33,7 +34,7 @@ const links = [
       </nav>
     </div>
 
-    <p class="foot-copy">&copy; {year} <a class="foot-link" href="https://certonymity.com/" target="_blank" rel="noopener noreferrer">Certonymity</a></p>
+    <p class="foot-copy">&copy; {year} <a class="foot-link" href={CERTONYMITY_URL} target="_blank" rel="noopener noreferrer">Certonymity Ltd</a></p>
 
     <p class="foot-note">cDot is technical infrastructure. Any regulated activities, including banking and payments, are performed by licensed partners.</p>
   </div>

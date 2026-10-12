@@ -10,7 +10,7 @@
  * 404 is excluded - it is not a destination, and listing it invites indexing of
  * a page that should never appear in results.
  *
- * Dynamic routes ([slug].astro) are skipped by the glob - "/resources/[slug]/"
+ * Dynamic routes ([slug].astro) are skipped by the glob - "/blog/[slug]/"
  * is not a URL - and their pages are listed from the data that generates them,
  * with a lastmod, which is the one thing the static pages cannot offer.
  */
@@ -37,7 +37,7 @@ export async function GET({ site }) {
     ...routes.map((r) => `  <url><loc>${new URL(r, site).href}</loc></url>`),
     ...articles.map(
       (a) =>
-        `  <url><loc>${new URL(`/resources/${a.slug}/`, site).href}</loc>` +
+        `  <url><loc>${new URL(`/blog/${a.slug}/`, site).href}</loc>` +
         `<lastmod>${a.modified.slice(0, 10)}</lastmod></url>`,
     ),
   ].join("\n");

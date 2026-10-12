@@ -1,0 +1,4 @@
+# The Blog used to be Resources. Permanent, so links and search results carry over.
+/resources /blog/ 301
+/resources/ /blog/ 301
+/resources/* /blog/:splat 301

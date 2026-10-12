@@ -19,12 +19,12 @@ const description =
 
 <section id="network">
   <div class="wrap">
-    <h2>One network, three specialised chains.</h2>
+    <h2>One network, three specialised chains</h2>
     <p class="lead">Rather than forcing everything onto a single chain, cDot is a family of purpose-built blockchains, each engineered for what it does best: identity, stablecoin settlement, and trading, operating as one trusted network.</p>
-    <!-- Below 860px this becomes a horizontal snap-scroll row (see global.css).
+    {/* Below 860px this becomes a horizontal snap-scroll row (see global.css).
          tabindex + label because the cards hold no focusable elements, so the
          scroll container itself has to be reachable for a keyboard user to see
-         past the first card. -->
+         past the first card. */}
     <div class="chains" tabindex="0" role="group" aria-label="The three cDot chains: C-Layer, P-Layer and T-Layer">
       {CHAINS.map((c) => (
         <div class="chain">
@@ -49,28 +49,28 @@ const description =
     <div class="maplive">
       <div class="mapcard">
         <div class="mapvp" id="mapvp">
-          <!-- Constant-size dotted-land texture. Deliberately OUTSIDE #maplayer so
+          {/* Constant-size dotted-land texture. Deliberately OUTSIDE #maplayer so
                it is never CSS-scaled: it is redrawn for the current view instead,
-               which is what stops the dots growing and blurring as you zoom. -->
+               which is what stops the dots growing and blurring as you zoom. */}
           <canvas class="landcv" id="landcv" aria-hidden="true"></canvas>
-          <!-- Only the nodes are transformed. -->
+          {/* Only the nodes are transformed. */}
           <div class="maplayer" id="maplayer"></div>
           <div class="mapbadge"><span class="dot"></span>Real-time</div>
-          <!-- Minimap navigator: appears once you zoom in. -->
+          {/* Minimap navigator: appears once you zoom in. */}
           <div class="minimap" id="minimap" data-nopan hidden aria-label="Map navigator - drag to pan">
             <canvas id="minicv"></canvas>
             <div class="minirect" id="minirect"></div>
           </div>
-          <!-- Text is set by the map script, which knows the platform modifier.
+          {/* Text is set by the map script, which knows the platform modifier.
                Kept out of the markup so JS-disabled visitors are not told the
-               map is interactive when it isn't. -->
+               map is interactive when it isn't. */}
           <div class="maphint" id="maphint" hidden></div>
           <div class="mapzoom" data-nopan>
             <button id="mz-in" aria-label="Zoom in">+</button>
             <button id="mz-out" aria-label="Zoom out">&minus;</button>
             <button id="mz-fit" aria-label="Reset zoom">&#x26F6;</button>
           </div>
-          <!-- Node details, shown when a node is selected. -->
+          {/* Node details, shown when a node is selected. */}
           <div class="nodepanel" id="nodepanel" data-nopan hidden>
             <button class="np-close" id="np-close" aria-label="Clear selection">&times;</button>
             <p class="np-label">Location</p><p class="np-value" id="np-loc"></p>
@@ -84,12 +84,12 @@ const description =
     </div>
     <p class="lead">Anyone can run a node — join the network to secure the C-layer and earn CDOT tokens.</p>
     <form class="node-form" id="clayerForm" name="clayer-nodes">
-      <!-- A placeholder is not a label: it vanishes on first keystroke and many
-           screen readers skip it entirely. Visually hidden, still announced. -->
+      {/* A placeholder is not a label: it vanishes on first keystroke and many
+           screen readers skip it entirely. Visually hidden, still announced. */}
       <label class="sr-only" for="clayer-email">Email address</label>
       <input id="clayer-email" type="email" name="email" autocomplete="email"
              placeholder="name@company.com" required>
-      <!-- Honeypot: hidden from people, filled in by bots. -->
+      {/* Honeypot: hidden from people, filled in by bots. */}
       <input class="cf-honeypot" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
       <button class="btn btn-primary" type="submit">Register your interest</button>
     </form>
@@ -97,13 +97,13 @@ const description =
   </div>
 </section>
 
-<!-- Live C-Layer map - implementation and rationale in public/assets/map.js.
+{/* Live C-Layer map - implementation and rationale in public/assets/map.js.
      Served from public/ rather than inlined to keep the page's prose dominant
-     in its markup; `defer` so the elements it queries have parsed. -->
+     in its markup; `defer` so the elements it queries have parsed. */}
 <script src="/assets/map.js" defer></script>
 
-<!-- C-layer node signup. Ported from c.email-website, which runs the same form
-     against the same sheet - so a signup from either site lands in one place. -->
+{/* C-layer node signup. Ported from c.email-website, which runs the same form
+     against the same sheet - so a signup from either site lands in one place. */}
 <script is:inline>
 (function(){
   /* The Apps Script web app that records signups. Public by design: it only

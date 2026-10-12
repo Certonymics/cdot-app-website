@@ -4,7 +4,7 @@
  *   - every URL is built from `site` (astro.config.mjs), not typed with the domain
  *   - the three chains and their figures come from src/lib/chains.js, the same
  *     data the network page and the structured data read
- *   - the Resources articles are listed from Sanity, so a new article appears
+ *   - the Blog articles are listed from Sanity, so a new article appears
  *     here on the next build with no one remembering to add it
  * What remains hand-written is the prose that describes the site itself (what
  * cDot is, how it works, one line per page). Change it here, and when a page's
@@ -12,6 +12,7 @@
  */
 import { CHAINS } from "../lib/chains.js";
 import { getArticles } from "../lib/sanity.js";
+import { CERTONYMITY_URL, CDOT_WORLD_URL, COMPANY_NUMBER } from "../lib/links.js";
 
 /** One line of prose, however it was wrapped. */
 const oneLine = (s = "") => s.replace(/\s+/g, " ").trim();
@@ -28,7 +29,7 @@ export async function GET({ site }) {
   ).join("\n");
 
   const resources = articles
-    .map((a) => `  - [${a.title}](${u(`/resources/${a.slug}/`)})` + (a.excerpt ? `: ${oneLine(a.excerpt)}` : ""))
+    .map((a) => `  - [${a.title}](${u(`/blog/${a.slug}/`)})` + (a.excerpt ? `: ${oneLine(a.excerpt)}` : ""))
     .join("\n");
 
   const text = `# cDot
@@ -42,6 +43,18 @@ that works across email, messaging, payments and age checks, without handing you
 to every service you use. Underneath, it is a blockchain network - a family of purpose-built
 chains, each engineered for what it does best: identity, stablecoin settlement, and trading,
 operating as one trusted network.
+
+## How cDot, cdot.world and Certonymity relate
+
+- Certonymity Ltd (${CERTONYMITY_URL}) is the company: registered in England and Wales, company
+  number ${COMPANY_NUMBER}, based in London. It builds cDot.
+- cDot the network (${CDOT_WORLD_URL}) is the project: the C-Layer, P-Layer and T-Layer chains,
+  the mission, and the open-source work. cdot.world covers the network itself.
+- cDot the app (this site, ${site.href}) is the product built on that network: what it does, how
+  to get it, and how it works for the people using it.
+- Each publishes its own llms.txt (see Related sites). For the network's specifications, the
+  C-Layer's status and the project's mission, prefer cdot.world; for company details, prefer
+  certonymity.com; for the app, this site.
 
 ## How it works
 
@@ -92,14 +105,21 @@ permissions, cDot exists to close the gap.
 - [Privacy & security](${u("/security/")}): the privacy and security architecture -
   end-to-end encryption (HPKE with X-Wing: X25519 + ML-KEM-768), on-device biometrics, invisible
   2FA, key management, zero-knowledge proofs, the CASA independent assessment, and data storage.
-- [Resources](${u("/resources/")}): articles from the team on privacy, email security
+- [Blog](${u("/blog/")}): articles from the team on privacy, email security
   and why cDot exists.
 ${resources}
 - [FAQ](${u("/faq/")})
 - [About](${u("/about/")})
+- [Contact](${u("/contact/")}): how to reach the team, by enquiry type.
 
 Note: c.Chat, c.Vault, FAQ and About are published but not yet written out in full.
 Prefer the pages above them for anything substantive.
+
+## Related sites (each publishes its own llms.txt)
+
+- [Certonymity: information for LLMs](${u(CERTONYMITY_URL + "llms.txt")}): the company behind cDot.
+- [cDot network: information for LLMs](${u(CDOT_WORLD_URL + "llms.txt")}): the network, the
+  chains, the mission and the open-source work.
 
 ## Data
 
@@ -109,7 +129,8 @@ Prefer the pages above them for anything substantive.
 ## Contact
 
 - [info@certonymity.com](mailto:info@certonymity.com): general enquiries.
-- Certonymity Ltd, 86-87 Campden Street, London W8 7EN, United Kingdom.
+- Certonymity Ltd, 86-87 Campden Street, London W8 7EN, United Kingdom. Registered in England and
+  Wales, company number ${COMPANY_NUMBER}.
 
 ## Disclaimer
 

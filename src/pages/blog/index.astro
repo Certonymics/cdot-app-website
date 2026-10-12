@@ -1,5 +1,5 @@
 ---
-/* Resources listing. Ported from c.email-website's Resources.jsx.
+/* Blog listing. Ported from c.email-website's Resources.jsx.
  *
  * The articles live in the c.Email Sanity project and are read at build time
  * (src/lib/sanity.js), so this page is plain static HTML - the original's
@@ -12,7 +12,7 @@ import Layout from "../../layouts/Layout.astro";
 import PostCard from "../../components/PostCard.astro";
 import { getArticles, pickFeatured } from "../../lib/sanity.js";
 
-const title = "Resources — cDot";
+const title = "Blog — cDot";
 const description =
   "Privacy insights, news, and guides from the cDot team on secure identity, encrypted email and staying private online.";
 
@@ -24,12 +24,12 @@ const rest = articles.filter((a) => a !== featured);
 
 <div class="page-hero">
   <div class="wrap">
-    <h1>Resources</h1>
+    <h1>Blog</h1>
     <p class="sub">Privacy insights, news, and guides from the cDot team.</p>
   </div>
 </div>
 
-<section class="resources">
+<section class="blog">
   <div class="wrap">
     {articles.length === 0 ? (
       <p class="empty">No articles yet — check back soon.</p>
@@ -48,10 +48,10 @@ const rest = articles.filter((a) => a !== featured);
   /* One column on a phone, two from 641px, three from 1024px - and the featured
      card spans two columns and two rows (see PostCard). Gap and section spacing
      as on c.Email's Resources page. */
-  .resources{padding:48px 0}
+  .blog{padding:48px 0}
   .post-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
   .empty{color:var(--ink-dim)}
   @media(min-width:641px){.post-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(min-width:768px){.resources{padding:64px 0}}
+  @media(min-width:768px){.blog{padding:64px 0}}
   @media(min-width:1024px){.post-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>

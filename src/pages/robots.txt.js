@@ -2,75 +2,31 @@
  * instead of being typed into a static file: a domain change used to leave the
  * Sitemap line pointing at the old site. The policy below is unchanged and is
  * explained in its own comments - edit it here, not in public/. */
+import { CERTONYMITY_URL, CDOT_WORLD_URL } from "../lib/links.js";
+
 export function GET({ site }) {
   const text = `# ${site.host}
 #
-# POLICY: let assistants read and cite this page live; do not let it be used as
-# training data. The two are controlled by different user-agents, so they are
-# split deliberately below. If you edit this file, keep the split intact.
+# POLICY: every crawler is welcome, including the ones that gather training data.
+# This is a public product site whose purpose is to be found and read; nothing
+# here is private. (An earlier version let assistants read and cite the page but
+# opted out of model training. That opt-out was removed deliberately - do not
+# re-add it by accident; scripts/check-seo.mjs fails if a named AI crawler is
+# blocked.)
 #
-# Everything here is public marketing copy, so nothing is hidden from ordinary
-# search engines - "User-agent: *" allows all of it.
-#
-# CAVEAT: robots.txt is a request, not enforcement. Well-behaved operators honour
-# it; scrapers ignore it entirely. Treat the Disallow lines below as stating
-# intent, not as a technical guarantee that nothing is ever trained on.
+# The same policy is stated on cdot.world, certonymity.com and c.email. A
+# robots.txt only governs the host that serves it, so each publishes its own.
 
 User-agent: *
 Allow: /
 
-# --- Retrieval / citation: ALLOWED -----------------------------------------
-# These fetch the page to answer a question and link back to it. They do not
-# feed foundation-model training.
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Claude-SearchBot
-Allow: /
-
-User-agent: Claude-User
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-# --- Model training: DISALLOWED --------------------------------------------
-# GPTBot and ClaudeBot crawl for foundation-model training. CCBot builds the
-# Common Crawl corpus, which many organisations train on. Google-Extended and
-# Applebot-Extended are not crawlers at all: they are opt-out tokens governing
-# whether content already crawled by Googlebot/Applebot may train Gemini and
-# Apple Intelligence.
-#
-# NOTE: Disallowing Google-Extended does NOT affect Google Search ranking or
-# indexing - Googlebot is separate and still allowed by "User-agent: *". The
-# same holds for Applebot-Extended and Apple's search crawler.
-
-User-agent: GPTBot
-Disallow: /
-
-User-agent: ClaudeBot
-Disallow: /
-
-User-agent: CCBot
-Disallow: /
-
-User-agent: Google-Extended
-Disallow: /
-
-User-agent: Applebot-Extended
-Disallow: /
-
-User-agent: Meta-ExternalAgent
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
 # Structured summary for language models: /llms.txt
+#
+# Related sites. cdot.app is the cDot app, built on the cDot network (cdot.world)
+# by Certonymity Ltd (certonymity.com). Each publishes its own robots.txt and
+# llms.txt:
+#   ${CDOT_WORLD_URL}robots.txt  ${CDOT_WORLD_URL}llms.txt
+#   ${CERTONYMITY_URL}robots.txt  ${CERTONYMITY_URL}llms.txt
 
 Sitemap: ${new URL("sitemap.xml", site).href}
 `;

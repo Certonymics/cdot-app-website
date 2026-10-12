@@ -14,13 +14,22 @@
  * The chain figures come from src/lib/chains.js, which the network page and
  * /llms.txt read too.
  */
-import { IOS_URL, ANDROID_URL } from "./links.js";
+import { IOS_URL, ANDROID_URL, CERTONYMITY_URL, CDOT_WORLD_URL, LINKEDIN_URL, COMPANY_NUMBER } from "./links.js";
 import { CHAINS } from "./chains.js";
 
 const frag = (site, name) => `${site.href}#${name}`;
-export const orgId = (site) => frag(site, "certonymity");
+/* The company's own node, as certonymity.com publishes it: ONE Organization @id
+   on every site (cdot.world and certonymity.com use the same one), so the graphs
+   describe a single organisation instead of three look-alikes. `site` is kept in
+   the signature so callers do not change. */
+export const orgId = (_site) => `${CERTONYMITY_URL}#organization`;
 export const websiteId = (site) => frag(site, "website");
 export const cdotId = (site) => frag(site, "cdot");
+/* The cDot network as cdot.world describes it. Defined there, so only referenced
+   here: the app is built on it, and each chain here is the same chain as its
+   namesake there. */
+export const NETWORK_ID = `${CDOT_WORLD_URL}#cdot`;
+export const networkChainId = (id) => `${CDOT_WORLD_URL}#${id}`;
 
 export function organization(site) {
   return {
@@ -29,7 +38,14 @@ export function organization(site) {
     name: "Certonymity Ltd",
     legalName: "Certonymity Ltd",
     alternateName: "Certonymity",
-    url: site.href,
+    /* The company's own site, not this one: this site is a product of the
+       company, not the company. The @id is the company's own, shared with
+       certonymity.com and cdot.world (see orgId). sameAs holds only profiles that ARE Certonymity - not
+       cdot.world or cdot.app, which are things it makes (see the product
+       nodes below), and a wrong sameAs can merge entities that are not one. */
+    url: CERTONYMITY_URL,
+    sameAs: [LINKEDIN_URL],
+    identifier: { "@type": "PropertyValue", propertyID: "Companies House company number", value: COMPANY_NUMBER },
     logo: new URL("assets/logo-512.png", site).href,
     email: "info@certonymity.com",
     contactPoint: [
@@ -100,6 +116,8 @@ export function cdotApplication(site, { withChains = false } = {}) {
     operatingSystem: "iOS, Android",
     installUrl: [IOS_URL, ANDROID_URL],
     provider: { "@id": orgId(site) },
+    /* The app is the product; the network it runs on is defined on cdot.world. */
+    isBasedOn: { "@id": NETWORK_ID },
     url: site.href,
     description:
       "cDot is the app for secure identity, communication and payments: stay private online and share only what you want, when you want. Underneath, it is a blockchain network, a family of purpose-built chains each engineered for what it does best (identity, stablecoin settlement, and trading) operating as one trusted network.",
@@ -125,6 +143,7 @@ export function chainLayers(site) {
     applicationCategory: c.category,
     operatingSystem: "Any",
     isPartOf: { "@id": cdotId(site) },
+    sameAs: networkChainId(c.id),
     provider: { "@id": orgId(site) },
     description: c.description,
     additionalProperty: c.specs.map((sp) => ({

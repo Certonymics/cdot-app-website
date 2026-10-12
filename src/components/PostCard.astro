@@ -1,7 +1,7 @@
 ---
-/* One Resources card. The whole card is the link.
+/* One Blog card. The whole card is the link.
  *
- * Sized as on c.Email's Resources page: every card is 300px tall with a 150px
+ * Sized as on c.Email's Blog page: every card is 300px tall with a 150px
  * image, and the featured article is a 2x2 tile (620px = two rows and the gap)
  * on screens wider than a phone. On a phone the featured card is just another
  * card. Heights are fixed, so the excerpt is clamped and fades out where it is
@@ -32,7 +32,7 @@ const sizes = featured
   : "(max-width: 640px) 100vw, (max-width: 1023px) 50vw, 340px";
 const meta = byline(article);
 ---
-<a class:list={["post", { featured }]} href={`/resources/${article.slug}/`}>
+<a class:list={["post", { featured }]} href={`/blog/${article.slug}/`}>
   <div class="post-media">
     {cover?.url && (
       <Image src={cover.url} {width} {height} {widths} {sizes} format="webp" alt="" loading="lazy" />

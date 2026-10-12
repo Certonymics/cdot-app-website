@@ -119,10 +119,10 @@ const FAQ = [
     <h2>Why use c.Email?</h2>
     <p class="lead">Don&rsquo;t choose between security and convenience. c.Email&rsquo;s encryption means hackers and email providers can&rsquo;t read your emails, while verification means no-one can impersonate you &mdash; and you don&rsquo;t even have to change your email.</p>
 
-    <!-- Titles, screen and copy are three flat lists placed into three grid
+    {/* Titles, screen and copy are three flat lists placed into three grid
          columns, rather than the original's two separate DOM trees for desktop
          and mobile. One copy of the content, and the narrow layout just stacks
-         the same three blocks. -->
+         the same three blocks. */}
     <div class="why">
       <div class="why-tabs" role="tablist" aria-label="Why use c.Email">
         {WHY.map((w, i) => (
@@ -139,8 +139,8 @@ const FAQ = [
         ))}
       </div>
 
-      <!-- The screens are depictions of the c.Email app, so they keep their own
-           light palette in both themes - as the phone mockups elsewhere do. -->
+      {/* The screens are depictions of the c.Email app, so they keep their own
+           light palette in both themes - as the phone mockups elsewhere do. */}
       <div class="why-stage">
         {WHY.map((w, i) => (
           <div
@@ -263,10 +263,10 @@ const FAQ = [
     <h2>How c.Email works</h2>
     <p class="lead">A few quick steps to protect your emails from surveillance, scams, and impersonation.</p>
 
-    <!-- Scroll-driven, as on c.email: the screen sits still while the steps
+    {/* Scroll-driven, as on c.email: the screen sits still while the steps
          move past it, and swaps as each one reaches the middle of the view.
          One DOM for both widths - the panel is sticky either way, and narrow
-         screens simply stack it above the steps instead of beside them. -->
+         screens simply stack it above the steps instead of beside them. */}
     <div class="s4">
       <div class="s4-col">
         <div class="s4-stage" aria-hidden="true">

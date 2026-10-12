@@ -2,7 +2,7 @@
 const tagline = "Secure identity, communication and payments";
 
 /* Which link is the page you are on. "page" for the exact page, "true" for a
-   page inside it (an article under Resources), so the section stays marked.
+   page inside it (an article under Blog), so the section stays marked.
    Screen readers announce it, and the stylesheet draws it for everyone else. */
 const path = Astro.url.pathname;
 const current = (href: string) =>
@@ -10,7 +10,8 @@ const current = (href: string) =>
 
 /* Top nav. An item with `children` renders as a dropdown, anything else as a
    plain link - so adding or removing a menu is a data change, not a markup one. */
-const navItems = [
+type NavItem = { label: string; href?: string; children?: { label: string; href: string }[] };
+const navItems: NavItem[] = [
   {
     label: "Product",
     children: [
@@ -23,15 +24,20 @@ const navItems = [
     ],
   },
   {
-    label: "Features",
+    label: "Explore",
     children: [
       { label: "How it works", href: "/how-it-works/" },
+      { label: "Network", href: "/network/" },
       { label: "Privacy & security", href: "/security/" },
     ],
   },
-  { label: "Network", href: "/network/" },
-  { label: "FAQ", href: "/faq/" },
-  { label: "Resources", href: "/resources/" },
+  {
+    label: "Resources",
+    children: [
+      { label: "FAQ", href: "/faq/" },
+      { label: "Blog", href: "/blog/" },
+    ],
+  },
 ];
 ---
 <header>
@@ -70,7 +76,7 @@ const navItems = [
             </div>
           </div>
         ) : (
-          <a class="link" href={item.href} aria-current={current(item.href)}>{item.label}</a>
+          <a class="link" href={item.href!} aria-current={current(item.href!)}>{item.label}</a>
         )
       )}
     </nav>

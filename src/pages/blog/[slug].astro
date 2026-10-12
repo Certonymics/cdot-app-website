@@ -1,5 +1,5 @@
 ---
-/* Resources article. Ported from c.email-website's ResourcesArticle.jsx.
+/* Blog article. Ported from c.email-website's ResourcesArticle.jsx.
  *
  * One static page per article in Sanity, generated at build time. The body is
  * Portable Text rendered to HTML (src/lib/portable-text.js) and styled below
@@ -15,6 +15,7 @@
 import { Image, getImage } from "astro:assets";
 import type { InferGetStaticPropsType } from "astro";
 import Layout from "../../layouts/Layout.astro";
+import { orgId } from "../../lib/schema.js";
 import StoreDropdown from "../../components/StoreDropdown.astro";
 import { getArticles, relatedTo, byline } from "../../lib/sanity.js";
 import { renderBody } from "../../lib/portable-text.js";
@@ -37,7 +38,7 @@ const site = Astro.site!;
 const title = `${article.title} — cDot`;
 /* The Studio requires an excerpt, but the data layer cannot promise it. */
 const description = article.excerpt || `${article.title}, from the cDot team.`;
-const url = new URL(`/resources/${article.slug}/`, site).href;
+const url = new URL(`/blog/${article.slug}/`, site).href;
 const meta = byline(article);
 const html = await renderBody(article.body);
 
@@ -53,7 +54,7 @@ const og = cover?.url && (cover.width ?? 0) >= 1200 && (cover.height ?? 0) >= 63
   : null;
 const ogImage = og ? new URL(og.src, site).href : undefined;
 
-const ORG_ID = `${site.href}#certonymity`;
+const ORG_ID = orgId(site);
 const extraSchema = [{
   "@type": "Article",
   "@id": `${url}#article`,
@@ -85,13 +86,13 @@ const secondHref = cta?.secondButtonLabel && cta?.secondButtonHref
   ogImage={ogImage}
   ogImageAlt={cover?.alt || article.title}
   extraSchema={extraSchema}
-  breadcrumbs={[{ name: "Resources", path: "/resources/" }]}
+  breadcrumbs={[{ name: "Blog", path: "/blog/" }]}
   crumbName={article.title}
 >
 
 <div class="page-hero">
   <div class="wrap">
-    <a class="back" href="/resources/">&larr; Resources</a>
+    <a class="back" href="/blog/">&larr; Blog</a>
     {meta && <p class="eyebrow">{meta}</p>}
     <h1>{article.title}</h1>
     {article.excerpt && <p class="sub">{article.excerpt}</p>}
@@ -139,7 +140,7 @@ const secondHref = cta?.secondButtonLabel && cta?.secondButtonHref
         <ul>
           {related.map((r) => (
             <li>
-              <a href={`/resources/${r.slug}/`}>
+              <a href={`/blog/${r.slug}/`}>
                 <span class="rel-title">{r.title}</span>
                 {r.readTime && <span class="rel-meta">{r.readTime}</span>}
               </a>

@@ -4,3 +4,12 @@ export const IOS_URL = "https://apps.apple.com/gb/app/c-email-secure-email/id678
 export const ANDROID_URL = "https://play.google.com/store/apps/details?id=org.certonym.c.email&hl=en_GB";
 export const CHROME_URL =
   "https://chromewebstore.google.com/detail/cemail-beta/nkjndjopnihapdifnakhijbhpmcjioeb";
+
+/* The sibling sites. Certonymity Ltd is the company; cdot.world is the cDot
+   network (the project, the chains, the open-source work); this site, cdot.app,
+   is the product built on that network. Every statement of that relationship -
+   structured data, llms.txt, robots.txt, the footer - reads from here. */
+export const CERTONYMITY_URL = "https://certonymity.com/";
+export const CDOT_WORLD_URL = "https://cdot.world/";
+export const LINKEDIN_URL = "https://www.linkedin.com/company/certonymity/";
+export const COMPANY_NUMBER = "16871742";
