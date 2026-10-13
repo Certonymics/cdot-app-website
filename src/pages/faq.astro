@@ -1,16 +1,40 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { faqPage } from "../lib/schema.js";
+import { FAQ, faqHtml } from "../lib/faq.js";
 
 const title = "FAQ — cDot";
 const description =
-  "Common questions about cDot, its three chains and how it works, from identity and privacy to payments. Full answers coming soon.";
+  "Answers to common questions about cDot: what it is, how it works, why it was created, how to use it and how to run a C-Layer node.";
+
+/* The same list drives the visible accordion and the FAQPage markup, so the two
+   cannot disagree (search engines ignore markup that does not match the page). */
+const items = FAQ.map((f) => ({ q: f.q, html: faqHtml(f.a) }));
+const url = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} extraSchema={[faqPage(url, items)]}>
   <div class="page-hero">
     <div class="wrap">
       <h1>FAQ</h1>
-      <p class="sub">Coming soon.</p>
+      <p class="sub">Common questions about cDot, answered.</p>
     </div>
   </div>
+
+  <section id="faq">
+    <div class="wrap">
+      <div class="faq">
+        {items.map((f) => (
+          <details class="faq-item">
+            <summary>
+              <span>{f.q}</span>
+              <span class="faq-mark" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-a" set:html={f.html} />
+          </details>
+        ))}
+      </div>
+      <p class="lead faq-foot">Still have questions? <a href="/contact/">Get in touch</a>.</p>
+    </div>
+  </section>
 </Layout>

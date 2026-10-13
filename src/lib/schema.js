@@ -14,7 +14,7 @@
  * The chain figures come from src/lib/chains.js, which the network page and
  * /llms.txt read too.
  */
-import { IOS_URL, ANDROID_URL, CERTONYMITY_URL, CDOT_WORLD_URL, LINKEDIN_URL, COMPANY_NUMBER } from "./links.js";
+import { EMAIL, IOS_URL, ANDROID_URL, CERTONYMITY_URL, CDOT_WORLD_URL, LINKEDIN_URL, COMPANY_NUMBER } from "./links.js";
 import { CHAINS } from "./chains.js";
 
 const frag = (site, name) => `${site.href}#${name}`;
@@ -47,7 +47,7 @@ export function organization(site) {
     sameAs: [LINKEDIN_URL],
     identifier: { "@type": "PropertyValue", propertyID: "Companies House company number", value: COMPANY_NUMBER },
     logo: new URL("assets/logo-512.png", site).href,
-    email: "info@certonymity.com",
+    email: EMAIL,
     contactPoint: [
       { "@type": "ContactPoint", contactType: "customer support", email: "support@certonymity.com" },
       { "@type": "ContactPoint", contactType: "press", email: "press@certonymity.com" },

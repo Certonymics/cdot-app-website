@@ -12,6 +12,7 @@
  */
 import { CHAINS } from "../lib/chains.js";
 import { getArticles } from "../lib/sanity.js";
+import { FAQ, faqTextBlocks } from "../lib/faq.js";
 import { CERTONYMITY_URL, CDOT_WORLD_URL, COMPANY_NUMBER } from "../lib/links.js";
 
 /** One line of prose, however it was wrapped. */
@@ -31,6 +32,10 @@ export async function GET({ site }) {
   const resources = articles
     .map((a) => `  - [${a.title}](${u(`/blog/${a.slug}/`)})` + (a.excerpt ? `: ${oneLine(a.excerpt)}` : ""))
     .join("\n");
+
+  const faq = FAQ.map((f) =>
+    [`### ${f.q}`, ...faqTextBlocks(f.a, site).map((b) => (typeof b === "string" ? b : b.list.map((l) => `- ${l}`).join("\n")))].join("\n\n"),
+  ).join("\n\n");
 
   const text = `# cDot
 
@@ -108,12 +113,20 @@ permissions, cDot exists to close the gap.
 - [Blog](${u("/blog/")}): articles from the team on privacy, email security
   and why cDot exists.
 ${resources}
-- [FAQ](${u("/faq/")})
+- [FAQ](${u("/faq/")}): what cDot is, how it works, why it was created, how to use it and how to run a C-Layer node.
+- [Whitepaper](${u("/whitepaper/")}): the technical and economic design of the network. Not yet published.
+- [Docs](${u("/docs/")}): guides and references for using and building on the network. Not yet published.
+- [Code](${u("/code/")}): open-source repositories, SDKs and examples for building on the network. Not yet published.
+- [Community](${u("/community/")}): where users, node operators and developers get together. Not yet published.
 - [About](${u("/about/")})
 - [Contact](${u("/contact/")}): how to reach the team, by enquiry type.
 
-Note: c.Chat, c.Vault, FAQ and About are published but not yet written out in full.
+Note: c.Chat, c.Vault, Whitepaper, Docs, Code, Community and About are published but not yet written out in full.
 Prefer the pages above them for anything substantive.
+
+## FAQ
+
+${faq}
 
 ## Related sites (each publishes its own llms.txt)
 
