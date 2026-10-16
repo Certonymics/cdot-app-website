@@ -5,16 +5,14 @@ import { CHAINS } from "../lib/chains.js";
 import { CDOT_WORLD_URL } from "../lib/links.js";
 
 const title = "Network \u2014 cDot";
-const description =
-  "cDot is an open-source blockchain project solving privacy and accountability online, from identity checks to communications and transactions.";
 ---
 
-<Layout title={title} description={description} extraSchema={[cdotApplication(Astro.site, { withChains: true }), ...chainLayers(Astro.site)]}>
+<Layout title={title} extraSchema={[cdotApplication(Astro.site, { withChains: true }), ...chainLayers(Astro.site)]}>
 
 <div class="page-hero">
   <div class="wrap">
     <h1>The cDot network</h1>
-    <p class="sub">cDot is an open-source blockchain project solving the problems of privacy and accountability everywhere on the internet — from identity checks to communications and transactions.</p>
+    <p class="sub">cDot is an open-source blockchain project solving the problems of privacy and security everywhere on the internet.</p>
   </div>
 </div>
 

@@ -11,9 +11,6 @@ import StoreDropdown from "../components/StoreDropdown.astro";
 import shield from "../assets/security/esof-shield.png";
 
 const title = "Privacy & security — cDot";
-const description =
-  "How cDot keeps your emails safe and private: end-to-end encryption, post-quantum security, verified sending, and more.";
-
 
 /* Feather icon bodies; the <svg> wrapper is in the markup. */
 const ICONS: Record<string, string> = {
@@ -71,12 +68,12 @@ const SECTIONS = [
   },
 ];
 ---
-<Layout title={title} description={description}>
+<Layout title={title}>
 
 <div class="page-hero">
   <div class="wrap">
     <h1>Privacy and security on cDot</h1>
-    <p class="sub">cDot exists to help you protect your emails. Here&rsquo;s how our privacy and security architecture works.</p>
+    <p class="sub">cDot exists to help you protect your online activity and identity. Here&rsquo;s how our privacy and security architecture works.</p>
     <Image
       class="shield"
       src={shield}

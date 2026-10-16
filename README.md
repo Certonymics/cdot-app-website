@@ -341,3 +341,21 @@ matters. `check-seo.mjs` fails the build if a comment is still in a built page.
 
 `npm run dev` does not run that step, so on localhost the inline scripts still show their
 comments; templates are clean either way.
+
+## Meta descriptions follow the page
+
+A page's meta description, `og:description` and the structured data's description are not
+written separately. `src/layouts/Layout.astro` renders the page, reads its hero subtitle
+(`<p class="sub">` in `.page-hero`, via `src/lib/seo.js`) and uses that, so editing the
+subtitle updates all three on the next build, the same way `/llms.txt` and `/robots.txt`
+follow `site` and the shared data.
+
+- A page with a usable subtitle (70 characters or more, not "Coming soon.") needs no
+  `description` prop. How it works, Network, Privacy & security, Email, Identity, Payments and
+  For developers work this way.
+- A page without one (Home, About, Contact, FAQ, Chat, Vault, the legal pages, 404) passes its
+  own `description` to `<Layout>`. If it has neither, the build fails and says so.
+- Blog articles take theirs from the Sanity excerpt.
+- `check-seo.mjs` warns if a page sets its own description while its subtitle could supply it.
+
+Titles and `og:title` are still set per page: a title is not a copy of any one line of content.

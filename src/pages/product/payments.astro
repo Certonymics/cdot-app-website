@@ -1,13 +1,21 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import FaqSection from "../../components/FaqSection.astro";
 import StoreDropdown from "../../components/StoreDropdown.astro";
 
 const title = "Payments \u2014 cDot";
-const description =
-  "High-throughput, low-cost global stablecoin settlement on cDot, with native on- and off-ramping.";
+
+/* PLACEHOLDER questions and answers: drafted from what the site already says
+   about this product, to be replaced with the real ones. */
+const FAQ = [
+  { q: "What are cDot payments?", html: "<p>Instant, low-cost, borderless payments in stablecoin, settled on the P-Layer, one of cDot&rsquo;s three purpose-built chains.</p>" },
+  { q: "Are payments private?", html: "<p>Payments are between verified parties, but you share anonymous proofs rather than personal data, so you only reveal what you choose to.</p>" },
+  { q: "Can businesses use cDot payments?", html: "<p>Yes. cDot is built for payments between people, businesses and machines, with verifiable identity on both sides of every transaction.</p>" },
+  { q: "When will payments be available?", html: "<p>Stablecoin and crypto payments are coming in early 2027.</p>" },
+];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title}>
 
 <div class="page-hero">
   <div class="wrap">
@@ -54,6 +62,10 @@ const description =
   
   </div>
 </section>
+
+<div class="divider"></div>
+
+<FaqSection items={FAQ} />
 
 <section class="page-ctas">
   <div class="wrap">

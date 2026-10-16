@@ -2,7 +2,8 @@
 import Layout from "../layouts/Layout.astro";
 import AppGallery from "../components/AppGallery.astro";
 import StoreDropdown from "../components/StoreDropdown.astro";
-import { cdotApplication } from "../lib/schema.js";
+import { cdotApplication, faqPage } from "../lib/schema.js";
+import { MINI_FAQ, faqHtml } from "../lib/faq.js";
 import { CDOT_WORLD_URL } from "../lib/links.js";
 
 /* These follow the TAGLINE, not the hero. The hero names the four products -
@@ -26,9 +27,14 @@ const HOW = [
   ["Scan your ID and take a selfie", "A one-time check that encrypts your identity information into anonymous attribute proofs."],
   ["Start using cDot", "Your encrypted identity is now tied to your email, powering private messaging, payments, and verification."],
 ];
+
+/* The same questions as the visible accordion below, so the FAQPage markup and
+   the page cannot disagree. */
+const faq = MINI_FAQ.map((f) => ({ q: f.q, html: faqHtml(f.a) }));
+const url = new URL(Astro.url.pathname, Astro.site).href;
 ---
 
-<Layout title={title} description={description} ogTitle={ogTitle} ogDescription={ogDescription} extraSchema={[cdotApplication(Astro.site)]}>
+<Layout title={title} description={description} ogTitle={ogTitle} ogDescription={ogDescription} extraSchema={[cdotApplication(Astro.site), faqPage(url, faq)]}>
 
 <div class="hero">
   <div class="watermark" aria-hidden="true">
@@ -65,29 +71,42 @@ const HOW = [
         </li>
       ))}
     </ol>
+    <p class="lead why-more"><a href="/how-it-works/">Learn more about how cDot works.</a></p>
   </div>
 </section>
 
 <div class="divider"></div>
 
-{/* Ported from WhyCdotExists.jsx in 'Cdot site (main)'. A teaser: the full
-     version belongs on /about, which the closing link points at. */}
+{/* Ported from WhyCdotExists.jsx and NoDataStatement.jsx in 'Cdot site (main)',
+     now one section: why cDot exists, and what it means for your data. A
+     teaser: the full version is on cdot.world, which the closing link points at. */}
 <section id="why">
   <div class="wrap">
-    <h2>Why cDot exists</h2>
+    <h2>Our goal is to protect your data, not collect it</h2>
     <p class="lead">The internet never came with a way to prove who you are, keep your data private, or move money safely. cDot is the internet&rsquo;s missing piece: letting you move across the internet untracked and ensuring your money stays yours, whatever happens. Our network is run by a worldwide community — and because it&rsquo;s open-source, anyone can build on it.</p>
-    <p class="lead why-more"><a href="/about/">Learn more about cDot</a></p>
+    <p class="lead">Most apps track your activity and harvest information about you. With cDot, you share anonymous proofs, not personal data, so you only reveal what you choose to. With no data business to protect, cDot is community-run, open-source, and borderless. You&rsquo;re in control of your identity, funds, and private keys. Our system just makes sure you never lose them.</p>
+    <p class="lead why-more"><a href={CDOT_WORLD_URL} target="_blank" rel="noopener noreferrer">Read more about the vision behind cDot.</a></p>
   </div>
 </section>
 
 <div class="divider"></div>
 
-{/* Ported from NoDataStatement.jsx in 'Cdot site (main)'. Left-aligned and on
-     our tokens; needs no styles of its own, being a heading and two leads. */}
-<section id="privacy">
+<section id="faq">
   <div class="wrap">
-    <h2>Our goal is to protect your data, not collect it</h2>
-    <p class="lead">Most apps track your activity and harvest information about you. With cDot, you share anonymous proofs, not personal data, so you only reveal what you choose to. With no data business to protect, cDot is community-run, open-source, and borderless. You&rsquo;re in control of your identity, funds, and private keys. Our system just makes sure you never lose them.</p>
+    <h2>FAQ</h2>
+    <p class="lead">Learn more about cDot.</p>
+    <div class="faq">
+      {faq.map((f) => (
+        <details class="faq-item">
+          <summary>
+            <span>{f.q}</span>
+            <span class="faq-mark" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-a" set:html={f.html} />
+        </details>
+      ))}
+    </div>
+    <p class="lead why-more"><a href="/faq/">Read the full FAQ.</a></p>
   </div>
 </section>
 

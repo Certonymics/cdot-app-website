@@ -54,8 +54,15 @@ const walk = (d) =>
     e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)],
   );
 const read = (p) => readFileSync(join(dist, p), "utf8");
+const NAMED = { amp: "&", quot: '"', apos: "'", lt: "<", gt: ">", nbsp: " ", lsquo: "\u2018", rsquo: "\u2019", ldquo: "\u201C", rdquo: "\u201D", mdash: "\u2014", ndash: "\u2013", hellip: "\u2026" };
 const decode = (s) =>
-  s.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
+  s.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (m, e) => {
+    if (e[0] === "#") {
+      const n = e[1].toLowerCase() === "x" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+      return Number.isNaN(n) ? m : String.fromCodePoint(n);
+    }
+    return NAMED[e.toLowerCase()] ?? m;
+  });
 const attr = (html, re) => {
   const m = html.match(re);
   return m ? decode(m[1]) : undefined;
@@ -109,6 +116,15 @@ for (const p of pages) {
     if (p.description.length > 175) report(where, `meta description is ${p.description.length} chars (will be cut off in results)`);
   }
   if (p.title && p.title.length > 70) report(where, `title is ${p.title.length} chars (will be cut off in results)`);
+
+  /* The description is meant to follow the hero subtitle (src/lib/seo.js). A page
+     that sets its own while it has a usable subtitle can drift from it, which
+     is how these went stale before: say so. */
+  const sub = p.html.match(/<div[^>]*class="page-hero"[^>]*>[\s\S]*?<p[^>]*class="sub"[^>]*>([\s\S]*?)<\/p>/i);
+  const subText = sub && decode(sub[1].replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim();
+  if (subText && subText.length >= 70 && !/^coming soon/i.test(subText) && p.description && p.description !== subText) {
+    warn(where, "has its own meta description although its hero subtitle could supply it; remove the page's `description` so they cannot drift");
+  }
 
   if (p.noindex) {
     if (p.canonical) err(where, "noindex page names a canonical");

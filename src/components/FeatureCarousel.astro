@@ -20,7 +20,6 @@ import encryption from "../assets/features/1h.webp";
 import verified from "../assets/features/2b.webp";
 import eyesOnly from "../assets/features/3c.webp";
 import anyEmail from "../assets/features/4.webp";
-import anywhere from "../assets/features/6b.webp";
 
 const ITEMS = [
   {
@@ -42,11 +41,6 @@ const ITEMS = [
     img: anyEmail,
     label: "Works with any email",
     body: "c.Email works with your existing email provider, including Gmail or Outlook, so you can get started in minutes with your current address.",
-  },
-  {
-    img: anywhere,
-    label: "Email privacy wherever you are",
-    body: "Download the app to get secure email on any device.",
   },
 ];
 
@@ -102,21 +96,18 @@ const widthFor = (img: ImageMetadata) => Math.round((SHOW_H * img.width) / img.h
 <style>
   .fc{
     margin-top:48px;
-    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px;
+    display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:48px;
   }
   .fc-slides{grid-column:1 / -1;display:flex;flex-direction:column;gap:64px}
-  .fc-slide{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px;align-items:center}
+  .fc-slide{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);column-gap:48px;align-items:center}
 
-  /* The same panel as the Why and How stages above it. */
-  .fc-stage{
-    display:grid;place-items:center;padding:32px;
-    border:1px solid #D6EBFF;border-radius:16px;background:#FAFCFF;
-  }
+  /* No panel behind the phone: the screenshot already carries its own glow, and
+     a box around it only competes with it. */
+  .fc-stage{display:grid;place-items:center}
   .fc-stage :global(.fc-img){
     display:block;height:420px;width:auto;max-width:100%;object-fit:contain;
     filter:drop-shadow(0 18px 28px rgba(var(--shadow-rgb),.16));
   }
-  :global(:root[data-theme="dark"]) .fc-stage{background:#141820;border-color:rgba(234,243,255,.14)}
 
   .fc-copy h3{
     font-family:"Host Grotesk Variable","Host Grotesk","Geist Variable","Geist",sans-serif;
@@ -160,7 +151,6 @@ const widthFor = (img: ImageMetadata) => Math.round((SHOW_H * img.width) / img.h
     .fc{margin-top:36px;grid-template-columns:minmax(0,1fr)}
     .fc-slides{gap:48px}
     .fc-slide{grid-template-columns:minmax(0,1fr);row-gap:26px}
-    .fc-stage{padding:24px}
     .fc-stage :global(.fc-img){height:340px}
     .fc-controls{grid-column:1;justify-content:center}
     .fc-copy p{font-size:15.5px}

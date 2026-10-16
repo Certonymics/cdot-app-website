@@ -18,9 +18,6 @@ import FeatureCarousel from "../../components/FeatureCarousel.astro";
 import { faqPage } from "../../lib/schema.js";
 
 const title = "Email \u2014 cDot";
-const description =
-  "Send authenticated, end-to-end encrypted messages from your existing email address. Available on iOS and Android.";
-
 
 const WHY = [
   { v: "enc",     t: "Protect your emails from prying eyes",
@@ -94,7 +91,7 @@ const FAQ = [
 ];
 ---
 
-<Layout title={title} description={description} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
+<Layout title={title} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
 
 <div class="page-hero">
   <div class="wrap">

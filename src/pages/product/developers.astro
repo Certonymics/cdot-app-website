@@ -17,8 +17,6 @@ import Layout from "../../layouts/Layout.astro";
 import { faqPage } from "../../lib/schema.js";
 
 const title = "For developers — cDot";
-const description =
-  "Cut onboarding times and KYC costs with reusable, cross-platform identity verification. Integrate cDot in five minutes and receive proofs, not user data.";
 
 /* Feather icon bodies; the <svg> wrapper lives in the markup. */
 const I: Record<string, string> = {
@@ -187,7 +185,7 @@ const FAQ = [
 ];
 ---
 
-<Layout title={title} description={description} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
+<Layout title={title} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
 
 <div class="page-hero">
   <div class="wrap">

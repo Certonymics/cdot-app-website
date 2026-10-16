@@ -1,5 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import StoreDropdown from "../components/StoreDropdown.astro";
+import { CDOT_WORLD_URL } from "../lib/links.js";
 
 const title = "About — cDot";
 const description =
@@ -9,8 +11,36 @@ const description =
 <Layout title={title} description={description} pageType="AboutPage">
   <div class="page-hero">
     <div class="wrap">
-      <h1>About</h1>
-      <p class="sub">Coming soon.</p>
+      <h1>cDot is what the internet should have been: privacy-first, decentralised, and accountable.</h1>
     </div>
   </div>
+
+  <section class="about">
+    <div class="wrap">
+      <p class="lead">cDot is the app for secure identity, communication and payments. Send secure emails and messages, pay via email, chat or wallet, and stay private online.</p>
+      <p class="lead">It has five core functionalities, all built on the same framework:</p>
+      <ul class="lead about-list">
+        <li><a href="/product/identity/">c.ID</a>: Prove specific facts about yourself without exposing your personal data.</li>
+        <li><a href="/product/chat/">c.Chat</a>: Post-quantum secure, plausibly deniable messaging.</li>
+        <li><a href="/product/email/">c.Email</a>: End-to-end encrypted email that works with existing Gmail and Outlook accounts.</li>
+        <li><a href="/product/payments/">c.Pay</a>: A stablecoin and crypto wallet integrated with email and chat.</li>
+        <li><a href="/product/vault/">c.Vault</a>: Secure asset recovery based on biometrics instead of passwords or secret keys.</li>
+      </ul>
+      <p class="lead">cDot is also a network designed to solve the problems of privacy and security everywhere on the internet, from proving who you are to sending messages and moving money. The cDot framework is available for others to build on — bringing us one step closer to our vision of a secure, permissionless, community-driven internet.</p>
+      <div class="hero-ctas">
+        <StoreDropdown label="Get cDot" id="dl-about" />
+        <a class="btn btn-ghost" href={CDOT_WORLD_URL} target="_blank" rel="noopener noreferrer">Explore the project</a>
+      </div>
+    </div>
+  </section>
 </Layout>
+
+<style>
+  /* The copy follows the hero directly, so the usual hero bottom padding and
+     section padding would stack into a large gap. Keep one modest gap instead
+     (the FAQ page does the same). */
+  .page-hero{min-height:0}
+  .page-hero .wrap{padding-bottom:40px}
+  .about{padding-top:24px}
+  .about-list{list-style:disc;padding-left:22px;display:flex;flex-direction:column;gap:8px}
+</style>

@@ -8,6 +8,7 @@ import LogoSymbol from "../components/LogoSymbol.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { organization, website, webPage, breadcrumbList } from "../lib/schema.js";
+import { heroSubtitle } from "../lib/seo.js";
 /* ?url gives the same hashed file the @font-face rules point at, so the preload
    below matches the font the stylesheet will ask for. Only the two latin
    subsets every page paints on first view: Geist (body) and Host Grotesk
@@ -17,7 +18,10 @@ import hostGroteskLatin from "@fontsource-variable/host-grotesk/files/host-grote
 
 interface Props {
   title: string;
-  description: string;
+  /* Optional: left out, it is the page's hero subtitle (see src/lib/seo.js), so
+     the meta tags cannot drift from what the page says. Required for a page
+     with no usable subtitle. */
+  description?: string;
   ogTitle?: string;
   ogDescription?: string;
   /* For pages that are not destinations - currently only 404. Suppresses the
@@ -42,7 +46,7 @@ interface Props {
 }
 const {
   title,
-  description,
+  description: descriptionProp,
   ogTitle,
   ogDescription,
   noindex = false,
@@ -54,6 +58,15 @@ const {
   breadcrumbs = [],
   crumbName,
 } = Astro.props;
+/* Render the page once, here, so its subtitle can be read before the head is
+   written; the same string is what goes into <main> below. */
+const body = await Astro.slots.render("default");
+const description = descriptionProp ?? heroSubtitle(body);
+if (!description) {
+  throw new Error(
+    `${Astro.url.pathname} has no description: pass \`description\` to <Layout>, or give the page a hero subtitle (<p class="sub">) of at least 70 characters.`,
+  );
+}
 /* `site` is set in astro.config.mjs, so it is always defined here. */
 const site = Astro.site!;
 const canonical = new URL(Astro.url.pathname, site).href;
@@ -170,7 +183,7 @@ const orgSchema = { "@context": "https://schema.org", "@graph": [...graph, ...ex
 <a class="skip-link" href="#main">Skip to main content</a>
 <LogoSymbol />
 <Header />
-<main id="main" tabindex="-1"><slot /></main>
+<main id="main" tabindex="-1"><Fragment set:html={body} /></main>
 <Footer />
 </body>
 </html>

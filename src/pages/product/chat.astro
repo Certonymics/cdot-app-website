@@ -1,10 +1,20 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import FaqSection from "../../components/FaqSection.astro";
 import StoreDropdown from "../../components/StoreDropdown.astro";
 
 const title = "Chat — cDot";
 const description =
   "Decentralised private messaging between verified people and businesses on cDot. More detail coming soon.";
+
+/* PLACEHOLDER questions and answers: drafted from what the site already says
+   about this product, to be replaced with the real ones. */
+const FAQ = [
+  { q: "What is cDot Chat?", html: "<p>cDot Chat is decentralised private messaging between verified people and businesses, built on cDot&rsquo;s identity network.</p>" },
+  { q: "Are my messages private?", html: "<p>Messages are designed to be end-to-end encrypted, so only you and the person you are talking to can read them.</p>" },
+  { q: "How do I know who I am talking to?", html: "<p>Everyone on cDot is verified once, so you can trust the person on the other end is real, without either of you sharing personal data.</p>" },
+  { q: "When will it be available?", html: "<p>Chat is coming soon. Download the app to be ready, and check back here for updates.</p>" },
+];
 ---
 
 <Layout title={title} description={description}>
@@ -14,7 +24,9 @@ const description =
       <p class="sub">Coming soon.</p>
     </div>
   </div>
-<section class="page-ctas page-ctas-first">
+<FaqSection items={FAQ} />
+
+<section class="page-ctas">
   <div class="wrap">
     <div class="hero-ctas">
       <StoreDropdown label="Get cDot" id="dl-cta" />

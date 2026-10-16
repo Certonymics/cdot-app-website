@@ -14,8 +14,6 @@ import { IOS_URL as IOS, ANDROID_URL as ANDROID } from "../../lib/links.js";
 import { faqPage } from "../../lib/schema.js";
 
 const title = "Identity — cDot";
-const description =
-  "c.ID is a reusable, privacy-preserving proof of age linked to your email address. Prove your age without revealing your identity or personal data.";
 
 const DEMO = "https://agepass.xyz/";
 
@@ -73,7 +71,7 @@ const FAQ = [
 ];
 ---
 
-<Layout title={title} description={description} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
+<Layout title={title} extraSchema={[faqPage(new URL(Astro.url.pathname, Astro.site).href, FAQ)]}>
 
 <div class="page-hero">
   <div class="wrap">

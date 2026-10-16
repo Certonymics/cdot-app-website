@@ -1,0 +1,31 @@
+---
+/* An FAQ accordion section, for pages whose questions live in the page itself.
+ * (The site-wide FAQ and the homepage's short one are built from src/lib/faq.js;
+ * Identity, Email and For developers carry their own lists and markup.)
+ *
+ * `html` is trusted markup written in this repo, as elsewhere. No FAQPage
+ * structured data is emitted here: add it with `faqPage()` from src/lib/schema.js
+ * through the page's `extraSchema` once the questions are final.
+ */
+interface Props {
+  items: { q: string; html: string }[];
+  heading?: string;
+}
+const { items, heading = "Frequently asked questions" } = Astro.props;
+---
+<section id="faq">
+  <div class="wrap">
+    <h2>{heading}</h2>
+    <div class="faq">
+      {items.map((f) => (
+        <details class="faq-item">
+          <summary>
+            <span>{f.q}</span>
+            <span class="faq-mark" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-a" set:html={f.html} />
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

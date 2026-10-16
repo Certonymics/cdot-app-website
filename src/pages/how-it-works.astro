@@ -12,8 +12,6 @@ import type { ComponentProps } from "astro/types";
 import StoreDropdown from "../components/StoreDropdown.astro";
 
 const title = "How it works — cDot";
-const description = "See how cDot protects your emails with end-to-end encryption and verified sending.";
-
 
 type Visual = ComponentProps<typeof HowVisual>["v"];
 const STEPS: { title: string; v: Visual; html: string }[] = [
@@ -63,12 +61,12 @@ const STEPS: { title: string; v: Visual; html: string }[] = [
   },
 ];
 ---
-<Layout title={title} description={description}>
+<Layout title={title}>
 
 <div class="page-hero">
   <div class="wrap">
     <h1>How cDot works</h1>
-    <p class="sub">Combining cryptography with verified identity to support safe, secure emails.</p>
+    <p class="sub">Find out how cDot combines advanced cryptography with verified identity to support a safe, private internet.</p>
   </div>
 </div>
 

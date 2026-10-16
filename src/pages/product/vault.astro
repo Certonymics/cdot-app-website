@@ -1,10 +1,21 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import FaqSection from "../../components/FaqSection.astro";
 import StoreDropdown from "../../components/StoreDropdown.astro";
 
 const title = "Vault — cDot";
 const description =
   "Secure storage and recovery for any asset on cDot, built on its identity and asset recovery chain. More detail coming soon.";
+
+/* PLACEHOLDER questions and answers: drafted from what the site already says
+   about this product, to be replaced with the real ones. */
+const FAQ = [
+  { q: "What is cDot Vault?", html: "<p>A secure place to store any asset or data, with recovery built in, on cDot&rsquo;s identity and asset recovery chain.</p>" },
+  { q: "What can I store in it?", html: "<p>Any data, and self-custodied crypto, so you never lose it.</p>" },
+  { q: "How does recovery work?", html: "<p>Your vault is recoverable with your unique biometric data, tied to the identity you verified once with cDot.</p>" },
+  { q: "Who can access what I store?", html: "<p>Only you. You stay in control of your identity, funds and private keys, and cDot&rsquo;s system makes sure you never lose them.</p>" },
+  { q: "When will it be available?", html: "<p>Vault is coming soon. Check back here for updates.</p>" },
+];
 ---
 
 <Layout title={title} description={description}>
@@ -14,7 +25,9 @@ const description =
       <p class="sub">Coming soon.</p>
     </div>
   </div>
-<section class="page-ctas page-ctas-first">
+<FaqSection items={FAQ} />
+
+<section class="page-ctas">
   <div class="wrap">
     <div class="hero-ctas">
       <StoreDropdown label="Get cDot" id="dl-cta" />
