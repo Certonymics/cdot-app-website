@@ -15,12 +15,11 @@ import StoreDropdown from "../../components/StoreDropdown.astro";
 import HowVisual from "../../components/HowVisual.astro";
 import type { ComponentProps } from "astro/types";
 import FeatureCarousel from "../../components/FeatureCarousel.astro";
-import { CHROME_URL as CHROME } from "../../lib/links.js";
 import { faqPage } from "../../lib/schema.js";
 
 const title = "Email \u2014 cDot";
 const description =
-  "Send authenticated, end-to-end encrypted messages from your existing email address. Available on iOS, Android, and Chrome.";
+  "Send authenticated, end-to-end encrypted messages from your existing email address. Available on iOS and Android.";
 
 
 const WHY = [
@@ -72,7 +71,7 @@ const HOW: { v: Visual; t: string; b: string }[] = [
 
 const FAQ = [
   { q: `What is c.Email?`, html: `
-    <p>c.Email is an app and browser extension that lets you send authenticated, end-to-end encrypted emails from your existing address.</p>` },
+    <p>c.Email is an app that lets you send authenticated, end-to-end encrypted emails from your existing address.</p>` },
   { q: `How does c.Email work?`, html: `
     <p>To use c.Email, just connect your existing email address – you don't have to create a new account. You then complete a quick, one-time identity check to create your decentralised identity document (DID). This contains your public encryption and verification keys, letting you encrypt and digitally sign your emails.</p>
     <p>When sending emails, you can then choose between three security levels:</p>
@@ -101,16 +100,6 @@ const FAQ = [
   <div class="wrap">
     <h1>Secure emails made easy</h1>
     <p class="sub">Send authenticated, end-to-end encrypted messages from your existing email address.</p>
-    <div class="hero-ctas">
-      <StoreDropdown
-        label="Get c.Email"
-        id="dl-email"
-        extra={{ label: "Chrome extension", href: CHROME }}
-      />
-      <a class="btn btn-ghost" href="https://c.email/" target="_blank" rel="noopener noreferrer">
-        Learn more about c.Email
-      </a>
-    </div>
   </div>
 </div>
 
@@ -317,11 +306,15 @@ const FAQ = [
         </details>
       ))}
     </div>
-    {/* c.Email's own site, not ours. That product has a full, working site of
-        its own, and its complete FAQ lives there rather than on /faq here. */}
-    <p class="lead faq-foot">
-      <a href="https://c.email/faq" target="_blank" rel="noopener noreferrer">Read our full FAQ</a>
-    </p>
+  </div>
+</section>
+
+<section class="page-ctas">
+  <div class="wrap">
+    <div class="hero-ctas">
+      <StoreDropdown label="Get cDot" id="dl-cta" />
+      <a class="btn btn-ghost" href="/faq/">Read full FAQ</a>
+    </div>
   </div>
 </section>
 

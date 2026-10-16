@@ -79,10 +79,6 @@ const FAQ = [
   <div class="wrap">
     <h1>Prove your age, not your identity</h1>
     <p class="sub">Verify with cDot to get your c.ID: a reusable, privacy-preserving proof of age linked to your email address.</p>
-    <div class="hero-ctas">
-      <StoreDropdown label="Download cDot" id="dl-hero" />
-      <a class="btn btn-ghost" href={DEMO} target="_blank" rel="noopener noreferrer">View demo</a>
-    </div>
   </div>
 </div>
 
@@ -215,7 +211,15 @@ const FAQ = [
         </details>
       ))}
     </div>
-    <p class="lead faq-foot">Still have questions? <a href="/contact/">Get in touch</a>.</p>
+  </div>
+</section>
+
+<section class="page-ctas">
+  <div class="wrap">
+    <div class="hero-ctas">
+      <StoreDropdown label="Get cDot" id="dl-cta" />
+      <a class="btn btn-ghost" href={DEMO} target="_blank" rel="noopener noreferrer">View demo</a>
+    </div>
   </div>
 </section>
 

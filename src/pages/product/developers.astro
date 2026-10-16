@@ -193,10 +193,6 @@ const FAQ = [
   <div class="wrap">
     <h1>Secure identity for any platform</h1>
     <p class="sub">Cut onboarding times and KYC costs with reusable, cross-platform identity verification.</p>
-    <div class="hero-ctas">
-      <a class="btn btn-primary" href="#integration">See integration</a>
-      <a class="btn btn-ghost" href="https://agepass.xyz/" target="_blank" rel="noopener noreferrer">Explore demo</a>
-    </div>
   </div>
 </div>
 
@@ -344,7 +340,20 @@ const FAQ = [
         </details>
       ))}
     </div>
-    <p class="lead faq-foot">Still have questions? <a href="/contact/">Get in touch</a>.</p>
+  </div>
+</section>
+
+<section class="page-ctas">
+  <div class="wrap">
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="https://agepass.xyz/" target="_blank" rel="noopener noreferrer">View demo</a>
+      {/* Not a link yet: the docs do not exist. Focusable so the label also shows
+          for keyboard and touch users. When they do, make this an <a>. */}
+      <span class="btn btn-ghost btn-soon" tabindex="0" aria-describedby="soon-docs-btn">
+        Read the docs
+        <span class="soon-tip" id="soon-docs-btn" role="tooltip">Coming soon</span>
+      </span>
+    </div>
   </div>
 </section>
 

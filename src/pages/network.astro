@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import { cdotApplication, chainLayers } from "../lib/schema.js";
 import { CHAINS } from "../lib/chains.js";
+import { CDOT_WORLD_URL } from "../lib/links.js";
 
 const title = "Network \u2014 cDot";
 const description =
@@ -36,6 +37,9 @@ const description =
           </div>
         </div>
       ))}
+    </div>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href={CDOT_WORLD_URL} target="_blank" rel="noopener noreferrer">Read the vision behind cDot</a>
     </div>
   </div>
 </section>

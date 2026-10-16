@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { faqPage } from "../lib/schema.js";
+import StoreDropdown from "../components/StoreDropdown.astro";
 import { FAQ, faqHtml } from "../lib/faq.js";
 
 const title = "FAQ — cDot";
@@ -17,7 +18,7 @@ const url = new URL(Astro.url.pathname, Astro.site).href;
   <div class="page-hero">
     <div class="wrap">
       <h1>FAQ</h1>
-      <p class="sub">Common questions about cDot, answered.</p>
+      <p class="sub">Everything you need to know about cDot.</p>
     </div>
   </div>
 
@@ -34,7 +35,20 @@ const url = new URL(Astro.url.pathname, Astro.site).href;
           </details>
         ))}
       </div>
-      <p class="lead faq-foot">Still have questions? <a href="/contact/">Get in touch</a>.</p>
+      <div class="hero-ctas">
+        <StoreDropdown label="Get cDot" id="dl-faq" />
+        <a class="btn btn-ghost" href="https://support.certonymity.com/hc/c-email/en" target="_blank" rel="noopener noreferrer">Read support docs</a>
+      </div>
     </div>
   </section>
 </Layout>
+
+<style>
+  /* The accordion follows the hero directly, with no heading of its own, so the
+     usual hero bottom padding, section padding and accordion top margin would
+     stack into a large gap. Keep one modest gap instead. */
+  .page-hero{min-height:0}
+  .page-hero .wrap{padding-bottom:40px}
+  #faq{padding-top:24px}
+  #faq .faq{margin-top:0}
+</style>

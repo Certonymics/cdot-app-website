@@ -10,16 +10,21 @@ const current = (href: string) =>
 
 /* Top nav. An item with `children` renders as a dropdown, anything else as a
    plain link - so adding or removing a menu is a data change, not a markup one. */
-type NavItem = { label: string; href?: string; children?: { label: string; href: string }[] };
+/* A child with `soon` is a name without a destination yet: it renders as a
+   focusable label that shows "Coming soon", not a link. When its page exists,
+   give it an href and drop `soon` (pages not ready to publish are kept as
+   src/pages/_name.astro, which Astro does not build). */
+type NavChild = { label: string; href?: string; soon?: boolean };
+type NavItem = { label: string; href?: string; children?: NavChild[] };
 const navItems: NavItem[] = [
   {
     label: "Product",
     children: [
-      { label: "Identity", href: "/product/c-id/" },
-      { label: "Email", href: "/product/c-email/" },
-      { label: "Chat", href: "/product/c-chat/" },
-      { label: "Payments", href: "/product/c-pay/" },
-      { label: "Vault", href: "/product/c-vault/" },
+      { label: "Identity", href: "/product/identity/" },
+      { label: "Email", href: "/product/email/" },
+      { label: "Chat", href: "/product/chat/" },
+      { label: "Payments", href: "/product/payments/" },
+      { label: "Vault", href: "/product/vault/" },
       { label: "For developers", href: "/product/developers/" },
     ],
   },
@@ -36,10 +41,10 @@ const navItems: NavItem[] = [
     children: [
       { label: "FAQ", href: "/faq/" },
       { label: "Blog", href: "/blog/" },
-      { label: "Whitepaper", href: "/whitepaper/" },
-      { label: "Docs", href: "/docs/" },
-      { label: "Code", href: "/code/" },
-      { label: "Community", href: "/community/" },
+      { label: "Whitepaper", soon: true },
+      { label: "Docs", soon: true },
+      { label: "Code", soon: true },
+      { label: "Community", soon: true },
     ],
   },
 ];
@@ -61,7 +66,7 @@ const navItems: NavItem[] = [
               type="button"
               aria-expanded="false"
               aria-controls={`menu-${item.label.toLowerCase()}`}
-              aria-current={item.children.some((c) => current(c.href)) ? "true" : undefined}
+              aria-current={item.children.some((c) => c.href && current(c.href)) ? "true" : undefined}
             >
               {item.label}
               <svg class="chev" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -73,9 +78,16 @@ const navItems: NavItem[] = [
                 the moment the menu opens. */}
             <div class="menu" id={`menu-${item.label.toLowerCase()}`}>
               <div class="menu-panel">
-                {item.children.map((c) => (
-                  <a class="menu-item" href={c.href} aria-current={current(c.href)}>{c.label}</a>
-                ))}
+                {item.children.map((c) =>
+                  c.soon ? (
+                    <span class="menu-item menu-soon" tabindex="0" aria-describedby={`soon-${c.label.toLowerCase()}`}>
+                      {c.label}
+                      <span class="soon-tip" id={`soon-${c.label.toLowerCase()}`} role="tooltip">Coming soon</span>
+                    </span>
+                  ) : (
+                    <a class="menu-item" href={c.href} aria-current={current(c.href!)}>{c.label}</a>
+                  ),
+                )}
               </div>
             </div>
           </div>
@@ -160,6 +172,12 @@ const navItems: NavItem[] = [
         m.addEventListener('mouseenter', function(){ closeAll(m); setOpen(m, true); });
         m.addEventListener('mouseleave', function(){ setOpen(m, false); });
       }
+    });
+
+    /* A "coming soon" label is not a destination, so tapping it should not shut
+       the menu: on a touch screen the tap is how you read the label. */
+    document.querySelectorAll('.menu-soon').forEach(function(el){
+      el.addEventListener('click', function(e){ e.stopPropagation(); });
     });
 
     document.addEventListener('click', function(){ closeAll(); });

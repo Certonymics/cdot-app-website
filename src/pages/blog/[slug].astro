@@ -19,7 +19,6 @@ import { orgId } from "../../lib/schema.js";
 import StoreDropdown from "../../components/StoreDropdown.astro";
 import { getArticles, relatedTo, byline } from "../../lib/sanity.js";
 import { renderBody } from "../../lib/portable-text.js";
-import { CHROME_URL as CHROME } from "../../lib/links.js";
 
 export async function getStaticPaths() {
   const articles = await getArticles();
@@ -124,7 +123,7 @@ const secondHref = cta?.secondButtonLabel && cta?.secondButtonHref
         <p class="cta-title">{heading}</p>
         <p class="cta-body">{body}</p>
         <div class="cta-actions">
-          <StoreDropdown label="Get cDot" id="dl-article" extra={{ label: "Chrome extension", href: CHROME }} />
+          <StoreDropdown label="Get cDot" id="dl-article" />
           {secondHref && (
             <a class="btn btn-ghost" href={secondHref} target="_blank" rel="noopener noreferrer">
               {cta?.secondButtonLabel}

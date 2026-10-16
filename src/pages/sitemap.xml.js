@@ -10,6 +10,9 @@
  * 404 is excluded - it is not a destination, and listing it invites indexing of
  * a page that should never appear in results.
  *
+ * A file or folder starting with "_" is one Astro does not build (a page held
+ * back until it is ready), so it is not listed either.
+ *
  * Dynamic routes ([slug].astro) are skipped by the glob - "/blog/[slug]/"
  * is not a URL - and their pages are listed from the data that generates them,
  * with a lastmod, which is the one thing the static pages cannot offer.
@@ -17,7 +20,7 @@
 import { getArticles } from "../lib/sanity.js";
 
 export async function GET({ site }) {
-  const files = Object.keys(import.meta.glob("./**/*.astro")).filter((f) => !f.includes("["));
+  const files = Object.keys(import.meta.glob("./**/*.astro")).filter((f) => !f.includes("[") && !/(^|\/)_/.test(f.replace(/^\.\//, "")));
 
   const routes = files
     .map((f) =>

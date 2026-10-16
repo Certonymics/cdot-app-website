@@ -92,13 +92,42 @@
   .menu{display:none;position:absolute;left:0;top:100%;padding-top:12px;
     min-width:186px;z-index:30}
   .has-menu.is-open .menu{display:block}
+  /* The last dropdown is at the right edge of the nav, so a panel hung from its
+     button's left edge runs off the screen on narrower desktops. Hang it from
+     the right edge instead. */
+  .has-menu:last-child .menu{left:auto;right:0}
   .menu-panel{background:var(--bg-1);border:1px solid var(--line);border-radius:12px;
     padding:6px;box-shadow:var(--shadow-card)}
   .menu-item{display:block;padding:9px 12px;border-radius:8px;color:var(--ink-dim);
     text-decoration:none;font-size:14.5px;white-space:nowrap;
     transition:background-color .2s,color .2s}
   .menu-item:hover{background:rgba(var(--accent-rgb),.10);color:var(--ink)}
-  .menu-item[aria-current]{background:rgba(var(--accent-rgb),.10);color:var(--ink);font-weight:500}
+  /* A name with no page yet. It highlights on hover like a link (.menu-item:hover
+     above) but is not one, so the cursor stays an arrow. "Coming soon" sits
+     just after the word, shown on hover and on keyboard or touch focus. Hidden
+     with visibility, not display, so the row keeps its width and nothing
+     shifts when it appears. */
+  .menu-soon{cursor:default}
+  .soon-tip{
+    display:inline;margin-left:8px;font-size:12px;color:var(--ink-faint);
+    opacity:0;visibility:hidden;pointer-events:none;
+    transition:opacity .15s ease,visibility .15s;
+  }
+  .menu-soon:hover .soon-tip,.menu-soon:focus .soon-tip{opacity:1;visibility:visible}
+  /* The same label on a button: above it, centred, since beside the text there
+     would be no room. It keeps the button's own hover, so it answers like the
+     live ones, and does not move the layout. */
+  .btn-soon{position:relative;cursor:default}
+  .btn-soon .soon-tip{
+    position:absolute;left:50%;bottom:calc(100% + 8px);margin:0;transform:translate(-50%,4px);
+    padding:5px 10px;border-radius:8px;white-space:nowrap;z-index:1;
+    color:var(--bg-0);background:var(--ink);border:0;box-shadow:var(--shadow-card);
+  }
+  .btn-soon:hover .soon-tip,.btn-soon:focus .soon-tip{opacity:1;visibility:visible;transform:translate(-50%,0)}
+  @media (prefers-reduced-motion:reduce){.soon-tip{transition:none}}
+  /* The page you are on is marked by weight alone. A background here too would
+     leave two rows highlighted at once while you hover another. */
+  .menu-item[aria-current]{color:var(--ink);font-weight:500}
 
 /* Theme toggle — kept for re-enabling; button is commented out in Header.astro */
   .theme-toggle{
@@ -165,6 +194,8 @@
     .menu-panel{background:none;border:0;border-radius:0;padding:0;box-shadow:none}
     .menu-item{padding:10px 24px 10px 40px}
     .menu-item:hover{background:var(--hover-veil)}
+    /* No hover on touch, and the list is already open: say it in the list. */
+    .soon-tip{opacity:1;visibility:visible}
   }
   h1,h2,.sub,.lead{overflow-wrap:break-word}
 
@@ -346,6 +377,8 @@
   .nav a.link:focus-visible,
   .menu-btn:focus-visible,
   .menu-item:focus-visible,
+  .menu-soon:focus-visible,
+  .btn-soon:focus-visible,
   .foot-link:focus-visible,
   .burger:focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
   /* Pressing cancels the hover lift, so the button reads as going down under the
@@ -366,6 +399,18 @@
        desktop  80px header + 96px section padding ->  8px
        mobile   72px header + 64px section padding -> 32px */
   section[id]{scroll-margin-top:8px}
+  /* The call-to-action row that closes a product page: the buttons that used to
+     sit in the hero, after everything a visitor needs to decide. No top padding
+     because the section above already ends with its own. */
+  .page-ctas{padding:0 0 96px}
+  .page-ctas .hero-ctas{margin-top:0}
+  /* The section above ends with its own 96px (64px on a phone), which is too
+     much air before a row of buttons. Pull the row up so about 40px shows. */
+  section + .page-ctas{margin-top:-56px}
+  @media(max-width:640px){section + .page-ctas{margin-top:-32px}}
+  /* Straight after the hero, with no section between to supply the space. */
+  .page-ctas-first{padding-top:48px}
+  @media(max-width:640px){.page-ctas{padding:0 0 64px}}
   @media(max-width:640px){section[id]{scroll-margin-top:32px}}
   /* #problem has almost no top padding - it continues #mission's argument - so
      it needs to supply the clearance itself if it is ever linked to directly. */

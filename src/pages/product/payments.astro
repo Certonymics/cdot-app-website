@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import StoreDropdown from "../../components/StoreDropdown.astro";
 
 const title = "Payments \u2014 cDot";
 const description =
@@ -51,6 +52,15 @@ const description =
     <p class="lead">cDot's secure design and invisible cryptography means every transaction settles instantly, every participant — human or agent — is verified and accountable, while every real-world identity and transaction stays private.</p>
     <p class="lead">Transfer money, pay teams and suppliers, settle trades, and do much more on cDot.</p>
   
+  </div>
+</section>
+
+<section class="page-ctas">
+  <div class="wrap">
+    <div class="hero-ctas">
+      <StoreDropdown label="Get cDot" id="dl-cta" />
+      <a class="btn btn-ghost" href="/faq/">Read full FAQ</a>
+    </div>
   </div>
 </section>
 

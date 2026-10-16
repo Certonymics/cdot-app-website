@@ -2,3 +2,15 @@
 /resources /blog/ 301
 /resources/ /blog/ 301
 /resources/* /blog/:splat 301
+
+# Product pages lost their "c-" prefix.
+/product/c-id /product/identity/ 301
+/product/c-id/ /product/identity/ 301
+/product/c-email /product/email/ 301
+/product/c-email/ /product/email/ 301
+/product/c-chat /product/chat/ 301
+/product/c-chat/ /product/chat/ 301
+/product/c-pay /product/payments/ 301
+/product/c-pay/ /product/payments/ 301
+/product/c-vault /product/vault/ 301
+/product/c-vault/ /product/vault/ 301

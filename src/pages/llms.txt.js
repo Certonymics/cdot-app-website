@@ -91,16 +91,16 @@ permissions, cDot exists to close the gap.
 - [cDot](${u("/")}): the app, its five products, how it works, and where to get it.
 - [Network](${u("/network/")}): the three chains and their specifications, plus the
   live C-Layer node map and node-operator signup.
-- [c.ID](${u("/product/c-id/")}): prove your age, not your identity. A reusable,
+- [Identity](${u("/product/identity/")}): prove your age, not your identity. A reusable,
   privacy-preserving proof of age linked to your email address, using zero-knowledge proofs so
   a service learns only that you meet its age requirement. Includes an FAQ.
-- [c.Pay](${u("/product/c-pay/")}): instant, borderless, private payments -
+- [Payments](${u("/product/payments/")}): instant, borderless, private payments -
   stablecoin settlement, why the existing chains do not serve it, and the use cases.
-- [Email](${u("/product/c-email/")}): send authenticated, end-to-end encrypted
+- [Email](${u("/product/email/")}): send authenticated, end-to-end encrypted
   messages from your existing email address. Why use it, how it works, and an FAQ. Available on
-  iOS, Android, and as a Chrome extension.
-- [c.Chat](${u("/product/c-chat/")}): decentralised private messaging.
-- [c.Vault](${u("/product/c-vault/")}): store and recover any asset.
+  iOS and Android.
+- [Chat](${u("/product/chat/")}): decentralised private messaging.
+- [Vault](${u("/product/vault/")}): store and recover any asset.
 - [For developers](${u("/product/developers/")}): cut onboarding times and KYC costs
   with reusable, cross-platform identity verification. Integrate in five minutes and receive
   proofs instead of storing user data. Includes an FAQ.
@@ -114,14 +114,10 @@ permissions, cDot exists to close the gap.
   and why cDot exists.
 ${resources}
 - [FAQ](${u("/faq/")}): what cDot is, how it works, why it was created, how to use it and how to run a C-Layer node.
-- [Whitepaper](${u("/whitepaper/")}): the technical and economic design of the network. Not yet published.
-- [Docs](${u("/docs/")}): guides and references for using and building on the network. Not yet published.
-- [Code](${u("/code/")}): open-source repositories, SDKs and examples for building on the network. Not yet published.
-- [Community](${u("/community/")}): where users, node operators and developers get together. Not yet published.
 - [About](${u("/about/")})
 - [Contact](${u("/contact/")}): how to reach the team, by enquiry type.
 
-Note: c.Chat, c.Vault, Whitepaper, Docs, Code, Community and About are published but not yet written out in full.
+Note: Chat, Vault and About are published but not yet written out in full.
 Prefer the pages above them for anything substantive.
 
 ## FAQ

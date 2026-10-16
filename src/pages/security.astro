@@ -9,7 +9,6 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import StoreDropdown from "../components/StoreDropdown.astro";
 import shield from "../assets/security/esof-shield.png";
-import { CHROME_URL as CHROME } from "../lib/links.js";
 
 const title = "Privacy & security — cDot";
 const description =
@@ -105,8 +104,8 @@ const SECTIONS = [
     </div>
 
     <div class="sec-cta">
-      <StoreDropdown label="Get cDot" id="dl-sec" extra={{ label: "Chrome extension", href: CHROME }} />
-      <a class="btn btn-ghost" href="/product/c-email/#features">See features</a>
+      <StoreDropdown label="Get cDot" id="dl-sec" />
+      <a class="btn btn-ghost" href="/how-it-works/">See how cDot works</a>
     </div>
   </div>
 </section>

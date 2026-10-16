@@ -10,7 +10,6 @@ import Layout from "../layouts/Layout.astro";
 import HowVisual from "../components/HowVisual.astro";
 import type { ComponentProps } from "astro/types";
 import StoreDropdown from "../components/StoreDropdown.astro";
-import { CHROME_URL as CHROME } from "../lib/links.js";
 
 const title = "How it works — cDot";
 const description = "See how cDot protects your emails with end-to-end encryption and verified sending.";
@@ -21,7 +20,7 @@ const STEPS: { title: string; v: Visual; html: string }[] = [
   {
     title: "Getting started",
     v: "link",
-    html: `<p>cDot is designed to work with your existing email account, rather than making you create a new one. Download our app or install our browser extension, then choose any email address (Gmail, Outlook, or other) to connect.</p>`,
+    html: `<p>cDot is designed to work with your existing email account, rather than making you create a new one. Download our app, then choose any email address (Gmail, Outlook, or other) to connect.</p>`,
   },
   {
     title: "Verification",
@@ -31,7 +30,7 @@ const STEPS: { title: string; v: Visual; html: string }[] = [
       <ul>
         <li>Email authentication and verified sending.</li>
         <li>Email encryption (because we don&rsquo;t support encrypted but unverified emails).</li>
-        <li>Anonymous age verification elsewhere (for more, see <a href="/product/c-id/">c.ID</a>).</li>
+        <li>Anonymous age verification elsewhere (for more, see <a href="/product/identity/">c.ID</a>).</li>
       </ul>`,
   },
   {
@@ -60,7 +59,7 @@ const STEPS: { title: string; v: Visual; html: string }[] = [
   {
     title: "c.ID",
     v: "age",
-    html: `<p>Once you&rsquo;ve verified your identity, you can also prove your age with a cryptographic proof, instead of a full ID, on other platforms using <a href="/product/c-id/">c.ID</a>.</p>`,
+    html: `<p>Once you&rsquo;ve verified your identity, you can also prove your age with a cryptographic proof, instead of a full ID, on other platforms using <a href="/product/identity/">c.ID</a>.</p>`,
   },
 ];
 ---
@@ -90,8 +89,8 @@ const STEPS: { title: string; v: Visual; html: string }[] = [
     </ol>
 
     <div class="hw-cta">
-      <StoreDropdown label="Get cDot" id="dl-how" extra={{ label: "Chrome extension", href: CHROME }} />
-      <a class="btn btn-ghost" href="/security/">Privacy &amp; security</a>
+      <StoreDropdown label="Get cDot" id="dl-how" />
+      <a class="btn btn-ghost" href="/security/">View security features</a>
     </div>
   </div>
 </section>

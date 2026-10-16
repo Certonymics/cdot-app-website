@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import StoreDropdown from "../../components/StoreDropdown.astro";
 
 const title = "Chat — cDot";
 const description =
@@ -13,4 +14,13 @@ const description =
       <p class="sub">Coming soon.</p>
     </div>
   </div>
+<section class="page-ctas page-ctas-first">
+  <div class="wrap">
+    <div class="hero-ctas">
+      <StoreDropdown label="Get cDot" id="dl-cta" />
+      <a class="btn btn-ghost" href="/faq/">Read full FAQ</a>
+    </div>
+  </div>
+</section>
+
 </Layout>
